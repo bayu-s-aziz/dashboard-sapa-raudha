@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+class User extends Authenticatable
+{
+    use HasFactory, Notifiable;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'userable_type',
+        'userable_id',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    /**
+     * Get the owning userable model (Guru or Parent).
+     */
+    public function userable()
+    {
+        return $this->morphTo();
+    }
+
+    /**
+     * Check if user is a guru (teacher).
+     */
+    public function isGuru()
+    {
+        return $this->userable_type === 'App\\Models\\Guru';
+    }
+
+    /**
+     * Check if user is a parent.
+     */
+    public function isParent()
+    {
+        return $this->userable_type === 'App\\Models\\ParentModel';
+    }
+
+    /**
+     * Get the role of the user.
+     */
+    public function getRole()
+    {
+        if ($this->isGuru()) {
+            return $this->userable->role ?? 'guru';
+        }
+        return 'parent';
+    }
+}
