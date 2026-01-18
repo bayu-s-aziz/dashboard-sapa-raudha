@@ -50,8 +50,14 @@ class SyncUsersFromGurusParents extends Command
                 ->first();
 
             if (!$user) {
+                // Generate email if not exists
+                $email = $guru->email;
+                if (!$email) {
+                    $email = 'guru' . $guru->id . '@sapa-raudha.local';
+                }
+
                 // Check if email already exists
-                $user = User::where('email', $guru->email)->first();
+                $user = User::where('email', $email)->first();
 
                 if ($user) {
                     // Update existing user
@@ -64,7 +70,7 @@ class SyncUsersFromGurusParents extends Command
                     // Create new user
                     $user = User::create([
                         'name' => $guru->name,
-                        'email' => $guru->email,
+                        'email' => $email,
                         'password' => Hash::make($guru->password_hash ?? 'password'),
                         'userable_type' => Guru::class,
                         'userable_id' => $guru->id,
@@ -87,24 +93,20 @@ class SyncUsersFromGurusParents extends Command
                 ->where('userable_id', $parent->id)
                 ->first();
 
+            // Determine primary name
+            $primaryName = $parent->father_name
+                ?? $parent->mother_name
+                ?? $parent->guardian_name
+                ?? 'Orang Tua #' . $parent->id;
+
+            // Generate email from student NIS
+            $newEmail = $parent->student && $parent->student->nis
+                ? $parent->student->nis . '@ra-alislam.sch.id'
+                : 'parent' . $parent->id . '@sapa-raudha.local';
+
             if (!$user) {
-                // Determine primary name
-                $primaryName = $parent->father_name
-                    ?? $parent->mother_name
-                    ?? $parent->guardian_name
-                    ?? 'Orang Tua #' . $parent->id;
-
-                // Generate email from phone or ID
-                $primaryPhone = $parent->father_phone
-                    ?? $parent->mother_phone
-                    ?? $parent->guardian_phone;
-
-                $email = $primaryPhone
-                    ? preg_replace('/[^0-9]/', '', $primaryPhone) . '@parent.sapa-raudha.local'
-                    : 'parent' . $parent->id . '@sapa-raudha.local';
-
                 // Check if email already exists
-                $existingUser = User::where('email', $email)->first();
+                $existingUser = User::where('email', $newEmail)->first();
 
                 if ($existingUser) {
                     // Update existing user
@@ -118,7 +120,7 @@ class SyncUsersFromGurusParents extends Command
                     // Create new user
                     $user = User::create([
                         'name' => $primaryName,
-                        'email' => $email,
+                        'email' => $newEmail,
                         'password' => Hash::make($parent->password_hash ?? 'password'),
                         'userable_type' => ParentModel::class,
                         'userable_id' => $parent->id,
@@ -127,6 +129,11 @@ class SyncUsersFromGurusParents extends Command
 
                 $parentsSynced++;
                 $this->line("  - Created/Updated user for parent: {$primaryName}");
+            } elseif ($user->email !== $newEmail) {
+                // Update email if changed
+                $user->update(['email' => $newEmail]);
+                $parentsSynced++;
+                $this->line("  - Updated email for parent: {$primaryName}");
             }
         }
 

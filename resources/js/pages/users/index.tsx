@@ -174,6 +174,11 @@ export default function UsersIndex({ users, filters }: Props) {
                 onSuccess: () => {
                     setDeleteDialogOpen(false);
                     setUserToDelete(null);
+                    toast({
+                        variant: 'success',
+                        title: 'Berhasil',
+                        description: 'Pengguna berhasil dihapus.',
+                    });
                 },
             });
         }
@@ -198,12 +203,6 @@ export default function UsersIndex({ users, filters }: Props) {
                         title="Manajemen Pengguna"
                         description="Kelola data admin, guru, dan orang tua"
                     />
-                    <Button asChild>
-                        <Link href="/users/create">
-                            <Plus className="mr-2 h-4 w-4" />
-                            Tambah Pengguna
-                        </Link>
-                    </Button>
                 </div>
 
                 <Card>

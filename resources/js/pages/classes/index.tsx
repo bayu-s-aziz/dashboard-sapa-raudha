@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Edit, Eye, MoreHorizontal, Search, Trash2 } from 'lucide-react';
+import { Edit, Eye, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 
 import Heading from '@/components/heading';
@@ -69,19 +69,24 @@ interface PaginatedClasses {
 interface Props {
     classes: PaginatedClasses;
     groups: string[];
+    academic_years: string[];
     filters: {
         search?: string;
         group?: string;
+        academic_year?: string;
     };
 }
 
-export default function ClassesIndex({ classes, groups, filters }: Props) {
+export default function ClassesIndex({ classes, groups, academic_years, filters }: Props) {
     const page = usePage<{ flash?: { success?: string; error?: string } }>();
 
     const [search, setSearch] = useState(filters.search || '');
     const [groupFilter, setGroupFilter] = useState(filters.group || 'all');
+    const [academicYearFilter, setAcademicYearFilter] = useState(filters.academic_year || 'all');
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [classToDelete, setClassToDelete] = useState<Kelas | null>(null);
+    const [addYearDialogOpen, setAddYearDialogOpen] = useState(false);
+    const [newAcademicYear, setNewAcademicYear] = useState('');
 
     useEffect(() => {
         const flash = page.props.flash || {};
@@ -113,6 +118,7 @@ export default function ClassesIndex({ classes, groups, filters }: Props) {
             {
                 search: search || undefined,
                 group: groupFilter !== 'all' ? groupFilter : undefined,
+                academic_year: academicYearFilter !== 'all' ? academicYearFilter : undefined,
             },
             { preserveState: true },
         );
@@ -130,9 +136,39 @@ export default function ClassesIndex({ classes, groups, filters }: Props) {
                 onSuccess: () => {
                     setDeleteDialogOpen(false);
                     setClassToDelete(null);
+                    toast({
+                        variant: 'success',
+                        title: 'Berhasil',
+                        description: 'Kelas berhasil dihapus.',
+                    });
                 },
             });
         }
+    };
+
+    const handleAddAcademicYear = (e: FormEvent) => {
+        e.preventDefault();
+        router.post('/classes/add-academic-year', {
+            academic_year: newAcademicYear,
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setAddYearDialogOpen(false);
+                setNewAcademicYear('');
+                toast({
+                    variant: 'success',
+                    title: 'Berhasil',
+                    description: 'Tahun ajaran baru berhasil ditambahkan.',
+                });
+            },
+            onError: (errors) => {
+                toast({
+                    variant: 'destructive',
+                    title: 'Gagal',
+                    description: errors.academic_year || 'Terjadi kesalahan.',
+                });
+            },
+        });
     };
 
     return (
@@ -140,13 +176,25 @@ export default function ClassesIndex({ classes, groups, filters }: Props) {
             <Head title="Manajemen Kelas" />
 
             <div className="space-y-6 p-6">
-                <Heading
-                    title="Manajemen Kelas"
-                    description="Kelola data kelas di sistem SAPA Raudha"
-                />
+                <div className="flex items-center justify-between">
+                    <Heading
+                        title="Manajemen Kelas"
+                        description="Kelola data kelas di sistem SAPA Raudha"
+                    />
+                    <Button onClick={() => setAddYearDialogOpen(true)}>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Tambah Tahun Ajaran
+                    </Button>
+                </div>
 
                 <Card>
                     <CardHeader>
+                        <div>
+                            <h3 className="text-lg font-medium">Daftar Kelas</h3>
+                            <p className="text-sm text-muted-foreground">
+                                Cari dan kelola data kelas
+                            </p>
+                        </div>
                         <form onSubmit={handleSearch} className="space-y-4">
                             <div className="flex flex-col gap-4 md:flex-row">
                                 <div className="flex-1">
@@ -176,6 +224,24 @@ export default function ClassesIndex({ classes, groups, filters }: Props) {
                                         {groups.map((group) => (
                                             <SelectItem key={group} value={group}>
                                                 Kelompok {group}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <Select
+                                    value={academicYearFilter}
+                                    onValueChange={setAcademicYearFilter}
+                                >
+                                    <SelectTrigger className="w-full md:w-45">
+                                        <SelectValue placeholder="Semua Tahun Ajaran" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">
+                                            Semua Tahun Ajaran
+                                        </SelectItem>
+                                        {academic_years.map((year) => (
+                                            <SelectItem key={year} value={year}>
+                                                {year}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -305,6 +371,10 @@ export default function ClassesIndex({ classes, groups, filters }: Props) {
                                             groupFilter !== 'all'
                                                 ? groupFilter
                                                 : undefined,
+                                        academic_year:
+                                            academicYearFilter !== 'all'
+                                                ? academicYearFilter
+                                                : undefined,
                                     })
                                 }
                             >
@@ -322,6 +392,10 @@ export default function ClassesIndex({ classes, groups, filters }: Props) {
                                         group:
                                             groupFilter !== 'all'
                                                 ? groupFilter
+                                                : undefined,
+                                        academic_year:
+                                            academicYearFilter !== 'all'
+                                                ? academicYearFilter
                                                 : undefined,
                                     })
                                 }
@@ -356,6 +430,52 @@ export default function ClassesIndex({ classes, groups, filters }: Props) {
                             Hapus
                         </Button>
                     </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={addYearDialogOpen} onOpenChange={setAddYearDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Tambah Tahun Ajaran Baru</DialogTitle>
+                        <DialogDescription>
+                            Masukkan tahun ajaran baru dalam format YYYY/YYYY
+                            (contoh: 2025/2026).
+                        </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleAddAcademicYear}>
+                        <div className="space-y-4 py-4">
+                            <div>
+                                <label
+                                    htmlFor="academic_year"
+                                    className="text-sm font-medium"
+                                >
+                                    Tahun Ajaran
+                                </label>
+                                <Input
+                                    id="academic_year"
+                                    value={newAcademicYear}
+                                    onChange={(e) =>
+                                        setNewAcademicYear(e.target.value)
+                                    }
+                                    placeholder="2025/2026"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                    setAddYearDialogOpen(false);
+                                    setNewAcademicYear('');
+                                }}
+                            >
+                                Batal
+                            </Button>
+                            <Button type="submit">Tambah</Button>
+                        </DialogFooter>
+                    </form>
                 </DialogContent>
             </Dialog>
         </AppLayout>

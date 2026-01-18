@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('students/{siswa}', [SiswaController::class, 'destroy'])->name('students.destroy');
 
     Route::get('classes', [KelasController::class, 'index'])->name('classes.index');
+    Route::post('classes/add-academic-year', [KelasController::class, 'addAcademicYear'])->name('classes.add-academic-year');
     Route::get('classes/{kelas}', [KelasController::class, 'show'])->name('classes.show');
     Route::get('classes/{kelas}/edit', [KelasController::class, 'edit'])->name('classes.edit');
     Route::put('classes/{kelas}', [KelasController::class, 'update'])->name('classes.update');

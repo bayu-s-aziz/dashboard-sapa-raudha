@@ -44,9 +44,13 @@ class KelasController extends Controller
         // Get unique groups for filter
         $groups = Kelas::select('group')->distinct()->orderBy('group')->pluck('group');
 
+        // Get unique academic years for filter
+        $academicYears = Kelas::select('academic_year')->distinct()->orderBy('academic_year', 'desc')->pluck('academic_year');
+
         return Inertia::render('classes/index', [
             'classes' => $classes,
             'groups' => $groups,
+            'academic_years' => $academicYears,
             'filters' => $request->only(['search', 'group', 'academic_year']),
         ]);
     }
@@ -233,5 +237,26 @@ class KelasController extends Controller
                 ->orderBy('group')
                 ->get(),
         ]);
+    }
+
+    /**
+     * Add a new academic year
+     */
+    public function addAcademicYear(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'academic_year' => 'required|string|max:20|regex:/^\d{4}\/\d{4}$/',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Check if academic year already exists
+        if (Kelas::where('academic_year', $request->academic_year)->exists()) {
+            return back()->withErrors(['academic_year' => 'Tahun ajaran ini sudah ada.'])->withInput();
+        }
+
+        return back()->with('success', 'Tahun ajaran baru berhasil ditambahkan. Sekarang Anda dapat membuat kelas untuk tahun ajaran ini.');
     }
 }

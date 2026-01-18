@@ -52,6 +52,13 @@ export default function UsersEdit({ user }: Props) {
 
     useEffect(() => {
         const flash = props.flash as { success?: string; error?: string };
+        if (flash?.success) {
+            toast({
+                variant: 'success',
+                title: 'Berhasil',
+                description: flash.success,
+            });
+        }
         if (flash?.error) {
             toast({
                 variant: 'destructive',
