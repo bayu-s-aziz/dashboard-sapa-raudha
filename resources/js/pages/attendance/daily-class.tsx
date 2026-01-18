@@ -97,13 +97,12 @@ export default function DailyClassAttendance({ class: classData, date, existingA
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
-        post(`/api/attendance/bulk-update`, {
-            data: {
-                class_id: classData.id,
-                date: data.date,
-                records: data.records,
-                scanned_by: data.scanned_by || null,
-            },
+        router.post(`/api/attendance/bulk-update`, {
+            class_id: classData.id,
+            date: data.date,
+            records: data.records,
+            scanned_by: data.scanned_by || null,
+        }, {
             onSuccess: () => {
                 toast({
                     title: 'Berhasil',

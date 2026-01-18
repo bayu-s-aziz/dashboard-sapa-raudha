@@ -1,4 +1,4 @@
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ArrowLeft, Save, Upload } from 'lucide-react';
 import { type FormEvent, useEffect, useState } from 'react';
 
@@ -91,8 +91,7 @@ export default function AnnouncementCreate({ gurus, classes }: Props) {
             formData.append(`attachments[${index}]`, file);
         });
 
-        post('/announcements', {
-            data: formData,
+        router.post('/announcements', formData, {
             onSuccess: () => {
                 toast({
                     title: 'Berhasil',

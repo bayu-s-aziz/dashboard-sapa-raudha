@@ -1,4 +1,4 @@
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
 import { ArrowLeft, Save, Trash2, Upload } from 'lucide-react';
 import { type FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
@@ -134,8 +134,7 @@ export default function AnnouncementEdit({ announcement, gurus, classes }: Props
             formData.append(`attachments[${index}]`, file);
         });
 
-        put(`/announcements/${announcement.id}`, {
-            data: formData,
+        router.put(`/announcements/${announcement.id}`, formData, {
             onSuccess: () => {
                 toast({
                     title: 'Berhasil',
