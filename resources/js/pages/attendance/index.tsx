@@ -86,7 +86,12 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
 
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [attendanceToDelete, setAttendanceToDelete] = useState<Attendance | null>(null);
-    const [searchFilters, setSearchFilters] = useState(filters);
+    const [searchFilters, setSearchFilters] = useState({
+        student_id: filters.student_id || 'all',
+        status: filters.status || 'all',
+        start_date: filters.start_date || '',
+        end_date: filters.end_date || '',
+    });
 
     useEffect(() => {
         const flash = page.props.flash || {};
@@ -112,7 +117,10 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
 
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
-        router.get('/attendance', searchFilters, {
+        const filtersToSend = { ...searchFilters };
+        if (filtersToSend.student_id === 'all') filtersToSend.student_id = '';
+        if (filtersToSend.status === 'all') filtersToSend.status = '';
+        router.get('/attendance', filtersToSend, {
             preserveState: true,
             replace: true,
         });
@@ -221,14 +229,14 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Siswa</label>
                                 <Select
-                                    value={searchFilters.student_id || ''}
+                                    value={searchFilters.student_id || 'all'}
                                     onValueChange={(value) => handleFilterChange('student_id', value)}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Pilih siswa" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="">Semua Siswa</SelectItem>
+                                        <SelectItem value="all">Semua Siswa</SelectItem>
                                         {students.map((student) => (
                                             <SelectItem key={student.id} value={student.id.toString()}>
                                                 {student.name} ({student.nis})
@@ -241,14 +249,14 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Status</label>
                                 <Select
-                                    value={searchFilters.status || ''}
+                                    value={searchFilters.status || 'all'}
                                     onValueChange={(value) => handleFilterChange('status', value)}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Pilih status" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="">Semua Status</SelectItem>
+                                        <SelectItem value="all">Semua Status</SelectItem>
                                         {statuses.map((status) => (
                                             <SelectItem key={status} value={status}>
                                                 {status === 'hadir' ? 'Hadir' :
@@ -287,7 +295,12 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                                     type="button"
                                     variant="outline"
                                     onClick={() => {
-                                        setSearchFilters({});
+                                        setSearchFilters({
+                                            student_id: 'all',
+                                            status: 'all',
+                                            start_date: '',
+                                            end_date: '',
+                                        });
                                         router.get('/attendance', {}, { preserveState: true, replace: true });
                                     }}
                                 >
