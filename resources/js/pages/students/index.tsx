@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Edit, Eye, MoreHorizontal, Search, Trash2 } from 'lucide-react';
+import { Edit, Eye, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 
 import Heading from '@/components/heading';
@@ -145,13 +145,27 @@ export default function StudentsIndex({ students, classes, filters }: Props) {
             <Head title="Manajemen Siswa" />
 
             <div className="space-y-6 p-6">
-                <Heading
-                    title="Manajemen Siswa"
-                    description="Kelola data siswa di sistem SAPA Raudha"
-                />
+                <div className="flex items-center justify-between">
+                    <Heading
+                        title="Manajemen Siswa"
+                        description="Kelola data siswa di sistem SAPA Raudha"
+                    />
+                    <Button asChild>
+                        <Link href="/students/create">
+                            <Plus className="mr-2 h-4 w-4" />
+                            Tambah Siswa
+                        </Link>
+                    </Button>
+                </div>
 
                 <Card>
                     <CardHeader>
+                        <div>
+                            <h3 className="text-lg font-medium">Daftar Siswa</h3>
+                            <p className="text-sm text-muted-foreground">
+                                Cari dan kelola data siswa
+                            </p>
+                        </div>
                         <form onSubmit={handleSearch} className="space-y-4">
                             <div className="flex flex-col gap-4 md:flex-row">
                                 <div className="flex-1">

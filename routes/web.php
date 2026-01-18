@@ -26,6 +26,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
     Route::get('students', [SiswaController::class, 'index'])->name('students.index');
+    Route::get('students/create', [SiswaController::class, 'create'])->name('students.create');
+    Route::post('students', [SiswaController::class, 'store'])->name('students.store');
     Route::get('students/{siswa}', [SiswaController::class, 'show'])->name('students.show');
     Route::get('students/{siswa}/edit', [SiswaController::class, 'edit'])->name('students.edit');
     Route::put('students/{siswa}', [SiswaController::class, 'update'])->name('students.update');
