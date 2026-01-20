@@ -28,6 +28,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $appends = ['avatar'];
+
     /**
      * Get the owning userable model (Guru or Parent).
      */
@@ -61,5 +63,21 @@ class User extends Authenticatable
             return $this->userable->role ?? 'guru';
         }
         return 'parent';
+    }
+
+    /**
+     * Get the user's avatar URL.
+     */
+    public function getAvatarAttribute()
+    {
+        if ($this->userable && $this->userable->photo_url) {
+            // If photo_url already starts with http or /, return as is
+            if (str_starts_with($this->userable->photo_url, 'http') || str_starts_with($this->userable->photo_url, '/')) {
+                return $this->userable->photo_url;
+            }
+            // Otherwise, prepend storage path
+            return asset('storage/' . $this->userable->photo_url);
+        }
+        return null;
     }
 }

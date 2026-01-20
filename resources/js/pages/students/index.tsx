@@ -39,9 +39,9 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { useDebounce } from '@/hooks/use-debounce';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { useDebounce } from '@/hooks/use-debounce';
 
 interface Kelas {
     id: number;

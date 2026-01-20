@@ -37,7 +37,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                 <DropdownMenuItem asChild>
                     <Link
                         className="block w-full cursor-pointer"
-                        href="/profile/edit"
+                        href="/settings/profile"
                         prefetch
                         onClick={cleanup}
                     >
