@@ -52,6 +52,7 @@ Route::prefix('parents')->group(function () {
     Route::put('/{id}', [ParentController::class, 'update']);
     Route::delete('/{id}', [ParentController::class, 'destroy']);
     Route::post('/{id}/upload-photo', [ParentController::class, 'uploadPhoto']);
+    Route::post('/{id}/switch-active-parent', [ParentController::class, 'switchActiveParent']);
 });
 
 // Announcement Management Routes

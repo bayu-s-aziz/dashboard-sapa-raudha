@@ -64,6 +64,14 @@ class ParentController extends Controller
         try {
             $student = Siswa::find($request->student_id);
 
+            // Determine default active parent type
+            $activeParentType = 'father'; // default
+            if ($request->mother_name && !$request->father_name) {
+                $activeParentType = 'mother';
+            } elseif ($request->guardian_name && !$request->father_name && !$request->mother_name) {
+                $activeParentType = 'guardian';
+            }
+
             // Create parent record
             $parent = ParentModel::create([
                 'student_id' => $request->student_id,
@@ -77,11 +85,12 @@ class ParentController extends Controller
                 'guardian_job' => $request->guardian_job,
                 'guardian_phone' => $request->guardian_phone,
                 'password_hash' => $request->password,
+                'active_parent_type' => $activeParentType,
             ]);
 
             // Create user account for authentication
             $user = User::create([
-                'name' => $parent->primary_contact_name ?? "Orang Tua " . $student->name,
+                'name' => $parent->active_parent_name ?? "Orang Tua " . $student->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'userable_type' => ParentModel::class,
@@ -239,6 +248,42 @@ class ParentController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error upload foto',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Switch active parent type
+     */
+    public function switchActiveParent(Request $request, $id)
+    {
+        $parent = ParentModel::find($id);
+
+        if (!$parent) {
+            return response()->json([
+                'message' => 'Data orang tua tidak ditemukan',
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'parent_type' => 'required|in:father,mother,guardian',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        try {
+            $parent->switchActiveParent($request->parent_type);
+
+            return response()->json([
+                'message' => 'Pengguna aktif berhasil diganti',
+                'data' => $parent->load('user', 'student'),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error mengganti pengguna aktif',
                 'error' => $e->getMessage(),
             ], 500);
         }

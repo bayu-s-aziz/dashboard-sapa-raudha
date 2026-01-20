@@ -29,6 +29,7 @@ interface User {
         mother_phone?: string;
         guardian_phone?: string;
         photo_url?: string;
+        active_parent_type?: string;
         student?: {
             id: number;
             name: string;
@@ -107,6 +108,45 @@ export default function UsersShow({ user }: Props) {
             .join('')
             .toUpperCase()
             .slice(0, 2);
+    };
+
+    const switchActiveParent = async (parentType: string) => {
+        try {
+            const response = await fetch(`/api/parents/${user.userable?.id}/switch-active-parent`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                },
+                body: JSON.stringify({
+                    parent_type: parentType,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                toast({
+                    title: 'Berhasil',
+                    description: 'Pengguna aktif berhasil diganti',
+                    variant: 'default',
+                });
+                // Reload page to show updated information
+                window.location.reload();
+            } else {
+                toast({
+                    title: 'Gagal',
+                    description: result.message || 'Terjadi kesalahan saat mengganti pengguna aktif',
+                    variant: 'destructive',
+                });
+            }
+        } catch (error) {
+            toast({
+                title: 'Gagal',
+                description: 'Terjadi kesalahan saat mengganti pengguna aktif',
+                variant: 'destructive',
+            });
+        }
     };
 
     return (
@@ -237,37 +277,99 @@ export default function UsersShow({ user }: Props) {
                             {user.userable_type ===
                                 'App\\Models\\ParentModel' && (
                                 <div className="mt-6 space-y-4 border-t pt-4">
-                                    <h4 className="font-semibold">
-                                        Informasi Siswa
-                                    </h4>
-                                    {user.userable?.student && (
-                                        <div className="space-y-2">
-                                            <div className="text-sm text-muted-foreground">
-                                                Nama Siswa
-                                            </div>
-                                            <p className="font-medium">
-                                                {user.userable.student.name}
-                                            </p>
-                                            <div className="grid gap-4 md:grid-cols-2 mt-4">
-                                                <div className="space-y-2">
-                                                    <div className="text-sm text-muted-foreground">
-                                                        NIS
-                                                    </div>
-                                                    <p className="font-medium">
-                                                        {user.userable.student.nis}
-                                                    </p>
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <div className="text-sm text-muted-foreground">
-                                                        NISN
-                                                    </div>
-                                                    <p className="font-medium">
-                                                        {user.userable.student.nisn}
-                                                    </p>
-                                                </div>
-                                            </div>
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="font-semibold">
+                                            Informasi Orang Tua Aktif
+                                        </h4>
+                                        <div className="flex gap-2">
+                                            {user.userable?.father_name && (
+                                                <Button
+                                                    size="sm"
+                                                    variant={user.userable.active_parent_type === 'father' ? 'default' : 'outline'}
+                                                    onClick={() => switchActiveParent('father')}
+                                                    disabled={user.userable.active_parent_type === 'father'}
+                                                >
+                                                    Ayah
+                                                </Button>
+                                            )}
+                                            {user.userable?.mother_name && (
+                                                <Button
+                                                    size="sm"
+                                                    variant={user.userable.active_parent_type === 'mother' ? 'default' : 'outline'}
+                                                    onClick={() => switchActiveParent('mother')}
+                                                    disabled={user.userable.active_parent_type === 'mother'}
+                                                >
+                                                    Ibu
+                                                </Button>
+                                            )}
+                                            {user.userable?.guardian_name && (
+                                                <Button
+                                                    size="sm"
+                                                    variant={user.userable.active_parent_type === 'guardian' ? 'default' : 'outline'}
+                                                    onClick={() => switchActiveParent('guardian')}
+                                                    disabled={user.userable.active_parent_type === 'guardian'}
+                                                >
+                                                    Wali
+                                                </Button>
+                                            )}
                                         </div>
-                                    )}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <div className="text-sm text-muted-foreground">
+                                            Nama Lengkap
+                                        </div>
+                                        <p className="font-medium">
+                                            {user.userable.active_parent_type === 'father' && user.userable.father_name}
+                                            {user.userable.active_parent_type === 'mother' && user.userable.mother_name}
+                                            {user.userable.active_parent_type === 'guardian' && user.userable.guardian_name}
+                                        </p>
+                                        {(user.userable.active_parent_type === 'father' && user.userable.father_phone) ||
+                                         (user.userable.active_parent_type === 'mother' && user.userable.mother_phone) ||
+                                         (user.userable.active_parent_type === 'guardian' && user.userable.guardian_phone) && (
+                                            <p className="text-sm text-muted-foreground">
+                                                Telepon: {
+                                                    user.userable.active_parent_type === 'father' && user.userable.father_phone ||
+                                                    user.userable.active_parent_type === 'mother' && user.userable.mother_phone ||
+                                                    user.userable.active_parent_type === 'guardian' && user.userable.guardian_phone
+                                                }
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="border-t pt-4">
+                                        <h4 className="font-semibold mb-4">
+                                            Informasi Siswa
+                                        </h4>
+                                        {user.userable?.student && (
+                                            <div className="space-y-2">
+                                                <div className="text-sm text-muted-foreground">
+                                                    Nama Siswa
+                                                </div>
+                                                <p className="font-medium">
+                                                    {user.userable.student.name}
+                                                </p>
+                                                <div className="grid gap-4 md:grid-cols-2 mt-4">
+                                                    <div className="space-y-2">
+                                                        <div className="text-sm text-muted-foreground">
+                                                            NIS
+                                                        </div>
+                                                        <p className="font-medium">
+                                                            {user.userable.student.nis}
+                                                        </p>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <div className="text-sm text-muted-foreground">
+                                                            NISN
+                                                        </div>
+                                                        <p className="font-medium">
+                                                            {user.userable.student.nisn}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             )}
                         </CardContent>
