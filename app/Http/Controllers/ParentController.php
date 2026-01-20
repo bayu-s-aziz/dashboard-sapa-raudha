@@ -201,4 +201,46 @@ class ParentController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Upload parent photo
+     */
+    public function uploadPhoto(Request $request, $id)
+    {
+        $parent = ParentModel::find($id);
+
+        if (!$parent) {
+            return response()->json([
+                'message' => 'Data orang tua tidak ditemukan',
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        try {
+            if ($request->hasFile('photo')) {
+                $file = $request->file('photo');
+                $filename = 'parent_' . $id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('photos/parents', $filename, 'public');
+
+                $parent->update(['photo_url' => '/storage/' . $path]);
+            }
+
+            return response()->json([
+                'message' => 'Foto berhasil diupload',
+                'data' => $parent,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error upload foto',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

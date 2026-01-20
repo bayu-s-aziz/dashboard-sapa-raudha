@@ -1,8 +1,9 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { ArrowLeft, Save } from 'lucide-react';
-import { useEffect, type FormEvent } from 'react';
+import { ArrowLeft, Save, Upload } from 'lucide-react';
+import { useEffect, type FormEvent, useState } from 'react';
 
 import Heading from '@/components/heading';
+import PhotoUpload from '@/components/photo-upload';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -36,6 +37,7 @@ interface Siswa {
     birth_date: string | null;
     religion: string | null;
     address: string | null;
+    photo_url?: string | null;
 }
 
 interface Props {
@@ -44,6 +46,9 @@ interface Props {
 }
 
 export default function StudentEdit({ student, classes }: Props) {
+    const [photoFile, setPhotoFile] = useState<File | null>(null);
+    const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
     const page = usePage<{ flash?: { success?: string; error?: string } }>();
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -104,6 +109,50 @@ export default function StudentEdit({ student, classes }: Props) {
         });
     };
 
+    const handlePhotoUpload = async () => {
+        if (!photoFile) return;
+
+        setUploadingPhoto(true);
+        try {
+            const formData = new FormData();
+            formData.append('photo', photoFile);
+
+            const response = await fetch(`/api/students/${student.id}/upload-photo`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                },
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                toast({
+                    title: 'Berhasil',
+                    description: 'Foto berhasil diupload',
+                    variant: 'default',
+                });
+                // Reload page to show updated photo
+                window.location.reload();
+            } else {
+                toast({
+                    title: 'Gagal',
+                    description: result.message || 'Terjadi kesalahan saat upload foto',
+                    variant: 'destructive',
+                });
+            }
+        } catch (error) {
+            toast({
+                title: 'Gagal',
+                description: 'Terjadi kesalahan saat upload foto',
+                variant: 'destructive',
+            });
+        } finally {
+            setUploadingPhoto(false);
+        }
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Edit Siswa - ${student.name}`} />
@@ -128,6 +177,27 @@ export default function StudentEdit({ student, classes }: Props) {
                             <CardTitle>Informasi Siswa</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
+                            {/* Photo Upload Section */}
+                            <PhotoUpload
+                                currentPhoto={student.photo_url}
+                                onPhotoChange={setPhotoFile}
+                                label="Foto Siswa"
+                            />
+
+                            {photoFile && (
+                                <div className="flex justify-end">
+                                    <Button
+                                        type="button"
+                                        onClick={handlePhotoUpload}
+                                        disabled={uploadingPhoto}
+                                        className="bg-green-600 hover:bg-green-700"
+                                    >
+                                        <Upload className="mr-2 h-4 w-4" />
+                                        {uploadingPhoto ? 'Mengupload...' : 'Upload Foto'}
+                                    </Button>
+                                </div>
+                            )}
+
                             <div className="grid gap-4 md:grid-cols-2">
                                 <div className="space-y-2">
                                     <Label htmlFor="nisn">

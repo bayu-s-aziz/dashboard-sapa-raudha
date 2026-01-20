@@ -60,6 +60,7 @@ interface User {
         phone?: string;
         role?: string;
         address?: string;
+        photo_url?: string;
     };
     created_at: string;
 }
@@ -255,7 +256,7 @@ export default function TeachersIndex({ users, filters }: Props) {
                                                 <div className="flex items-center gap-3">
                                                     <Avatar>
                                                         <AvatarImage
-                                                            src={`https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`}
+                                                            src={user.userable?.photo_url || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`}
                                                         />
                                                         <AvatarFallback>
                                                             {getInitials(

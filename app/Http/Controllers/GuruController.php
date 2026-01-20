@@ -186,4 +186,46 @@ class GuruController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Upload guru photo
+     */
+    public function uploadPhoto(Request $request, $id)
+    {
+        $guru = Guru::find($id);
+
+        if (!$guru) {
+            return response()->json([
+                'message' => 'Guru tidak ditemukan',
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        try {
+            if ($request->hasFile('photo')) {
+                $file = $request->file('photo');
+                $filename = 'guru_' . $id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('photos/gurus', $filename, 'public');
+
+                $guru->update(['photo_url' => '/storage/' . $path]);
+            }
+
+            return response()->json([
+                'message' => 'Foto berhasil diupload',
+                'data' => $guru,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error upload foto',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

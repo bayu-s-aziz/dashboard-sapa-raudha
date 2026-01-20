@@ -6,6 +6,8 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\LeaveRequestController;
+use App\Http\Controllers\GuruController;
+use App\Http\Controllers\ParentController;
 
 // User Management Routes
 Route::prefix('users')->group(function () {
@@ -30,6 +32,26 @@ Route::prefix('students')->group(function () {
     Route::delete('/{id}', [StudentController::class, 'destroy']);
     Route::get('/{studentId}/attendance', [StudentController::class, 'getAttendance']);
     Route::post('/{id}/upload-photo', [StudentController::class, 'uploadPhoto']);
+});
+
+// Teacher Management Routes
+Route::prefix('teachers')->group(function () {
+    Route::get('/', [GuruController::class, 'index']);
+    Route::post('/', [GuruController::class, 'store']);
+    Route::get('/{id}', [GuruController::class, 'show']);
+    Route::put('/{id}', [GuruController::class, 'update']);
+    Route::delete('/{id}', [GuruController::class, 'destroy']);
+    Route::post('/{id}/upload-photo', [GuruController::class, 'uploadPhoto']);
+});
+
+// Parent Management Routes
+Route::prefix('parents')->group(function () {
+    Route::get('/', [ParentController::class, 'index']);
+    Route::post('/', [ParentController::class, 'store']);
+    Route::get('/{id}', [ParentController::class, 'show']);
+    Route::put('/{id}', [ParentController::class, 'update']);
+    Route::delete('/{id}', [ParentController::class, 'destroy']);
+    Route::post('/{id}/upload-photo', [ParentController::class, 'uploadPhoto']);
 });
 
 // Announcement Management Routes

@@ -379,4 +379,51 @@ class UserController extends Controller
             'total_parents' => User::where('userable_type', ParentModel::class)->count(),
         ]);
     }
+
+    /**
+     * Upload user photo
+     */
+    public function uploadPhoto(Request $request, $id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'User tidak ditemukan',
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        try {
+            if ($request->hasFile('photo')) {
+                $file = $request->file('photo');
+                $filename = 'user_' . $id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('photos/users', $filename, 'public');
+
+                // Update photo_url based on userable type
+                if ($user->userable_type === Guru::class) {
+                    $user->userable->update(['photo_url' => '/storage/' . $path]);
+                } elseif ($user->userable_type === ParentModel::class) {
+                    $user->userable->update(['photo_url' => '/storage/' . $path]);
+                }
+            }
+
+            return response()->json([
+                'message' => 'Foto berhasil diupload',
+                'data' => $user->load('userable'),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error upload foto',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
