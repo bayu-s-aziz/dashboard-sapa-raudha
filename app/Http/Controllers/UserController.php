@@ -72,6 +72,81 @@ class UserController extends Controller
     }
 
     /**
+     * Display a listing of teachers (admin, guru, kepala sekolah)
+     */
+    public function teachers(Request $request)
+    {
+        $query = User::with('userable')
+            ->where('userable_type', Guru::class)
+            ->whereHasMorph('userable', [Guru::class], function ($q) {
+                $q->whereIn('role', ['admin', 'guru', 'kepsek']);
+            });
+
+        // Search by name or email
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%")
+                  ->orWhereHasMorph('userable', [Guru::class], function ($q) use ($search) {
+                      $q->where('nik', 'like', "%$search%")
+                        ->orWhere('phone', 'like', "%$search%");
+                  });
+            });
+        }
+
+        // Pagination
+        $perPage = $request->input('per_page', 15);
+        $users = $query->orderBy('created_at', 'desc')
+            ->paginate($perPage)
+            ->appends($request->only(['search', 'page', 'per_page']));
+
+        return Inertia::render('users/teachers', [
+            'users' => $users,
+            'filters' => [
+                'search' => $request->input('search', ''),
+            ],
+        ]);
+    }
+
+    /**
+     * Display a listing of parents
+     */
+    public function parents(Request $request)
+    {
+        $query = User::with('userable')
+            ->where('userable_type', ParentModel::class);
+
+        // Search by name or email
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%")
+                  ->orWhereHasMorph('userable', [ParentModel::class], function ($q) use ($search) {
+                      $q->where('father_name', 'like', "%$search%")
+                        ->orWhere('mother_name', 'like', "%$search%")
+                        ->orWhere('father_phone', 'like', "%$search%")
+                        ->orWhere('mother_phone', 'like', "%$search%");
+                  });
+            });
+        }
+
+        // Pagination
+        $perPage = $request->input('per_page', 15);
+        $users = $query->orderBy('created_at', 'desc')
+            ->paginate($perPage)
+            ->appends($request->only(['search', 'page', 'per_page']));
+
+        return Inertia::render('users/parents', [
+            'users' => $users,
+            'filters' => [
+                'search' => $request->input('search', ''),
+            ],
+        ]);
+    }
+
+    /**
      * Display the specified user
      */
     public function show($id)

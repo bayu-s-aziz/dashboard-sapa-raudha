@@ -5,8 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\AnnouncementController;
-use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AcademicYearController;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
@@ -20,6 +19,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users/teachers', [UserController::class, 'teachers'])->name('users.teachers');
+    Route::get('users/parents', [UserController::class, 'parents'])->name('users.parents');
     Route::get('users/{id}', [UserController::class, 'show'])->name('users.show');
     Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('users/{id}', [UserController::class, 'update'])->name('users.update');
@@ -40,6 +41,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('classes/{kelas}', [KelasController::class, 'update'])->name('classes.update');
     Route::delete('classes/{kelas}', [KelasController::class, 'destroy'])->name('classes.destroy');
 
+    Route::get('academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
+    Route::post('academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
+    Route::put('academic-years/{academicYear}/set-active', [AcademicYearController::class, 'setActive'])->name('academic-years.set-active');
+    Route::get('academic-years/active', [AcademicYearController::class, 'getActive'])->name('academic-years.active');
+    Route::put('academic-years/{academicYear}', [AcademicYearController::class, 'update'])->name('academic-years.update');
+    Route::delete('academic-years/{academicYear}', [AcademicYearController::class, 'destroy'])->name('academic-years.destroy');
+
     Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
     Route::get('announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
     Route::post('announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
@@ -49,6 +57,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('announcements/{pengumuman}', [AnnouncementController::class, 'destroyInertia'])->name('announcements.destroy');
 
     Route::get('attendance', [AttendanceController::class, 'indexInertia'])->name('attendance.index');
+    Route::get('attendance/reports', [AttendanceController::class, 'reports'])->name('attendance.reports');
+    Route::get('attendance/reports/export', [AttendanceController::class, 'exportReports'])->name('attendance.reports.export');
     Route::get('attendance/create', [AttendanceController::class, 'create'])->name('attendance.create');
     Route::post('attendance', [AttendanceController::class, 'storeInertia'])->name('attendance.store');
     Route::get('attendance/{kehadiran}', [AttendanceController::class, 'showInertia'])->name('attendance.show');

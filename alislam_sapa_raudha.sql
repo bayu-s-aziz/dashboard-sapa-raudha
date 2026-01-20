@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1deb3
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Jan 17, 2026 at 09:28 AM
--- Server version: 10.11.13-MariaDB-0ubuntu0.24.04.1
--- PHP Version: 8.3.29
+-- Host: localhost
+-- Generation Time: Jan 19, 2026 at 06:04 PM
+-- Server version: 8.0.44-0ubuntu0.24.04.2
+-- PHP Version: 8.4.16
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,15 +28,15 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `announcements` (
-  `id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `content` text NOT NULL,
-  `author_id` int(11) NOT NULL,
-  `author_type` enum('guru') NOT NULL DEFAULT 'guru',
-  `target_audience` enum('all','parents','teachers','class') DEFAULT 'all',
-  `target_class_id` int(11) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `id` int NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `content` text COLLATE utf8mb4_general_ci NOT NULL,
+  `author_id` int NOT NULL,
+  `author_type` enum('guru') COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'guru',
+  `target_audience` enum('all','parents','teachers','class') COLLATE utf8mb4_general_ci DEFAULT 'all',
+  `target_class_id` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -54,13 +54,13 @@ INSERT INTO `announcements` (`id`, `title`, `content`, `author_id`, `author_type
 --
 
 CREATE TABLE `attachments` (
-  `id` int(11) NOT NULL,
-  `announcement_id` int(11) NOT NULL,
-  `filename` varchar(255) NOT NULL,
-  `file_path` varchar(255) NOT NULL,
-  `file_type` varchar(50) DEFAULT NULL,
-  `file_size` int(11) DEFAULT NULL,
-  `uploaded_at` timestamp NULL DEFAULT current_timestamp()
+  `id` int NOT NULL,
+  `announcement_id` int NOT NULL,
+  `filename` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `file_path` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `file_type` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `file_size` int DEFAULT NULL,
+  `uploaded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -70,15 +70,15 @@ CREATE TABLE `attachments` (
 --
 
 CREATE TABLE `attendance` (
-  `id` int(11) NOT NULL,
-  `student_id` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `student_id` int NOT NULL,
   `date` date NOT NULL,
-  `status` enum('hadir','sakit','izin','alpa') DEFAULT 'hadir',
+  `status` enum('hadir','sakit','izin','alpa') COLLATE utf8mb4_general_ci DEFAULT 'hadir',
   `check_in` time DEFAULT NULL,
   `check_out` time DEFAULT NULL,
-  `notes` text DEFAULT NULL,
-  `scanned_by` int(11) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp()
+  `notes` text COLLATE utf8mb4_general_ci,
+  `scanned_by` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -108,9 +108,9 @@ INSERT INTO `attendance` (`id`, `student_id`, `date`, `status`, `check_in`, `che
 --
 
 CREATE TABLE `cache` (
-  `key` varchar(255) NOT NULL,
-  `value` mediumtext NOT NULL,
-  `expiration` int(11) NOT NULL
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -118,8 +118,8 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('laravel-cache-190512c237a2e3723016a2ad5617d7e9', 'i:2;', 1768641955),
-('laravel-cache-190512c237a2e3723016a2ad5617d7e9:timer', 'i:1768641955;', 1768641955);
+('sapa-raudha-cache-190512c237a2e3723016a2ad5617d7e9', 'i:1;', 1768845806),
+('sapa-raudha-cache-190512c237a2e3723016a2ad5617d7e9:timer', 'i:1768845806;', 1768845806);
 
 -- --------------------------------------------------------
 
@@ -128,9 +128,9 @@ INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
 --
 
 CREATE TABLE `cache_locks` (
-  `key` varchar(255) NOT NULL,
-  `owner` varchar(255) NOT NULL,
-  `expiration` int(11) NOT NULL
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -140,21 +140,21 @@ CREATE TABLE `cache_locks` (
 --
 
 CREATE TABLE `classes` (
-  `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `grade` int(11) NOT NULL,
-  `homeroom_teacher_id` int(11) DEFAULT NULL,
-  `academic_year` varchar(20) DEFAULT '2025/2026',
-  `created_at` timestamp NULL DEFAULT current_timestamp()
+  `id` int NOT NULL,
+  `name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `group` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `homeroom_teacher_id` int DEFAULT NULL,
+  `academic_year` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '2025/2026',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `classes`
 --
 
-INSERT INTO `classes` (`id`, `name`, `grade`, `homeroom_teacher_id`, `academic_year`, `created_at`) VALUES
-(1, 'Kelompok A', 1, 3, '2025/2026', '2026-01-09 12:06:47'),
-(2, 'Kelompok B', 1, 2, '2025/2026', '2026-01-09 12:06:47');
+INSERT INTO `classes` (`id`, `name`, `group`, `homeroom_teacher_id`, `academic_year`, `created_at`) VALUES
+(1, 'Kelompok A', 'A', 3, '2025/2026', '2026-01-09 12:06:47'),
+(2, 'Kelompok B', 'B', 2, '2025/2026', '2026-01-09 12:06:47');
 
 -- --------------------------------------------------------
 
@@ -163,13 +163,13 @@ INSERT INTO `classes` (`id`, `name`, `grade`, `homeroom_teacher_id`, `academic_y
 --
 
 CREATE TABLE `failed_jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `uuid` varchar(255) NOT NULL,
-  `connection` text NOT NULL,
-  `queue` text NOT NULL,
-  `payload` longtext NOT NULL,
-  `exception` longtext NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `id` bigint UNSIGNED NOT NULL,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -179,17 +179,17 @@ CREATE TABLE `failed_jobs` (
 --
 
 CREATE TABLE `gurus` (
-  `id` int(11) NOT NULL,
-  `nik` varchar(20) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  `role` enum('guru','kepsek','admin') DEFAULT 'guru',
-  `subject` varchar(100) DEFAULT NULL,
-  `password_hash` varchar(255) NOT NULL,
-  `photo_url` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `id` int NOT NULL,
+  `nik` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `phone` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `role` enum('guru','kepsek','admin') COLLATE utf8mb4_general_ci DEFAULT 'guru',
+  `subject` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `photo_url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -210,13 +210,13 @@ INSERT INTO `gurus` (`id`, `nik`, `name`, `email`, `phone`, `role`, `subject`, `
 --
 
 CREATE TABLE `jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `queue` varchar(255) NOT NULL,
-  `payload` longtext NOT NULL,
-  `attempts` tinyint(3) UNSIGNED NOT NULL,
-  `reserved_at` int(10) UNSIGNED DEFAULT NULL,
-  `available_at` int(10) UNSIGNED NOT NULL,
-  `created_at` int(10) UNSIGNED NOT NULL
+  `id` bigint UNSIGNED NOT NULL,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` tinyint UNSIGNED NOT NULL,
+  `reserved_at` int UNSIGNED DEFAULT NULL,
+  `available_at` int UNSIGNED NOT NULL,
+  `created_at` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -226,16 +226,16 @@ CREATE TABLE `jobs` (
 --
 
 CREATE TABLE `job_batches` (
-  `id` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `total_jobs` int(11) NOT NULL,
-  `pending_jobs` int(11) NOT NULL,
-  `failed_jobs` int(11) NOT NULL,
-  `failed_job_ids` longtext NOT NULL,
-  `options` mediumtext DEFAULT NULL,
-  `cancelled_at` int(11) DEFAULT NULL,
-  `created_at` int(11) NOT NULL,
-  `finished_at` int(11) DEFAULT NULL
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total_jobs` int NOT NULL,
+  `pending_jobs` int NOT NULL,
+  `failed_jobs` int NOT NULL,
+  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` mediumtext COLLATE utf8mb4_unicode_ci,
+  `cancelled_at` int DEFAULT NULL,
+  `created_at` int NOT NULL,
+  `finished_at` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -245,16 +245,16 @@ CREATE TABLE `job_batches` (
 --
 
 CREATE TABLE `leave_requests` (
-  `id` int(11) NOT NULL,
-  `student_id` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `student_id` int NOT NULL,
   `request_date` date NOT NULL,
-  `reason` text NOT NULL,
-  `attachment_path` varchar(255) DEFAULT NULL,
-  `status` enum('pending','approved','rejected') DEFAULT 'pending',
-  `submitted_at` timestamp NULL DEFAULT current_timestamp(),
-  `reviewed_by` int(11) DEFAULT NULL,
+  `reason` text COLLATE utf8mb4_general_ci NOT NULL,
+  `attachment_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` enum('pending','approved','rejected') COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `submitted_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `reviewed_by` int DEFAULT NULL,
   `reviewed_at` timestamp NULL DEFAULT NULL,
-  `review_notes` text DEFAULT NULL
+  `review_notes` text COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -272,9 +272,9 @@ INSERT INTO `leave_requests` (`id`, `student_id`, `request_date`, `reason`, `att
 --
 
 CREATE TABLE `migrations` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `migration` varchar(255) NOT NULL,
-  `batch` int(11) NOT NULL
+  `id` int UNSIGNED NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -285,7 +285,12 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (1, '0001_01_01_000000_create_users_table', 1),
 (2, '0001_01_01_000001_create_cache_table', 1),
 (3, '0001_01_01_000002_create_jobs_table', 1),
-(4, '2026_01_17_000000_create_sapa_raudha_tables', 1);
+(4, '2026_01_17_000000_create_sapa_raudha_tables', 1),
+(5, '2025_08_26_100418_add_two_factor_columns_to_users_table', 2),
+(6, '2026_01_17_095737_add_polymorphic_relationship_to_users_table', 2),
+(7, '2026_01_17_142502_change_grade_column_to_string_in_classes_table', 2),
+(8, '2026_01_17_152632_change_grade_to_group_in_classes_table', 2),
+(9, '2026_01_17_153626_update_existing_classes_group_values', 2);
 
 -- --------------------------------------------------------
 
@@ -294,21 +299,21 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 --
 
 CREATE TABLE `parents` (
-  `id` int(11) NOT NULL,
-  `student_id` int(11) NOT NULL,
-  `father_name` varchar(100) DEFAULT NULL,
-  `father_job` varchar(100) DEFAULT NULL,
-  `father_phone` varchar(20) DEFAULT NULL,
-  `mother_name` varchar(100) DEFAULT NULL,
-  `mother_job` varchar(100) DEFAULT NULL,
-  `mother_phone` varchar(20) DEFAULT NULL,
-  `guardian_name` varchar(100) DEFAULT NULL,
-  `guardian_job` varchar(100) DEFAULT NULL,
-  `guardian_phone` varchar(20) DEFAULT NULL,
-  `photo_url` varchar(255) DEFAULT NULL,
-  `password_hash` varchar(255) NOT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `id` int NOT NULL,
+  `student_id` int NOT NULL,
+  `father_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `father_job` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `father_phone` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mother_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mother_job` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mother_phone` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `guardian_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `guardian_job` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `guardian_phone` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `photo_url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -354,16 +359,16 @@ INSERT INTO `parents` (`id`, `student_id`, `father_name`, `father_job`, `father_
 --
 
 CREATE TABLE `password_reset_requests` (
-  `id` int(11) NOT NULL,
-  `identifier` varchar(20) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `user_type` enum('guru','parent') NOT NULL,
-  `phone_number` varchar(20) DEFAULT NULL,
-  `status` enum('pending','completed','rejected') DEFAULT 'pending',
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `id` int NOT NULL,
+  `identifier` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `user_type` enum('guru','parent') COLLATE utf8mb4_general_ci NOT NULL,
+  `phone_number` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` enum('pending','completed','rejected') COLLATE utf8mb4_general_ci DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `processed_at` timestamp NULL DEFAULT NULL,
-  `processed_by` int(11) DEFAULT NULL,
-  `notes` text DEFAULT NULL
+  `processed_by` int DEFAULT NULL,
+  `notes` text COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -380,8 +385,8 @@ INSERT INTO `password_reset_requests` (`id`, `identifier`, `name`, `user_type`, 
 --
 
 CREATE TABLE `password_reset_tokens` (
-  `email` varchar(255) NOT NULL,
-  `token` varchar(255) NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -392,12 +397,12 @@ CREATE TABLE `password_reset_tokens` (
 --
 
 CREATE TABLE `sessions` (
-  `id` varchar(255) NOT NULL,
-  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `ip_address` varchar(45) DEFAULT NULL,
-  `user_agent` text DEFAULT NULL,
-  `payload` longtext NOT NULL,
-  `last_activity` int(11) NOT NULL
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` text COLLATE utf8mb4_unicode_ci,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_activity` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -405,6 +410,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
+('1NckJNhTehiGLfyqArAIGnUqLWHsbm6BEtSjfkcl', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoieVJ5elFUaGtzMEZGblF0QWpIZE9DVjNVN3VkbWRBNHlLd2FGakhwTCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hdHRlbmRhbmNlIjtzOjU6InJvdXRlIjtzOjE2OiJhdHRlbmRhbmNlLmluZGV4Ijt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1768845877),
 ('RssFidKEaQmZac3bF3rBaI8PoT4Xw8ATGGim4hzU', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMVlHRzM1d2lIRUhYUmk0ZHdHTlAwY2tPeTdCbWVzRjA1eHVEWEczNyI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozMToiaHR0cDovL2xvY2FsaG9zdDo4MDAxL2Rhc2hib2FyZCI7fXM6OToiX3ByZXZpb3VzIjthOjI6e3M6MzoidXJsIjtzOjI3OiJodHRwOi8vbG9jYWxob3N0OjgwMDEvbG9naW4iO3M6NToicm91dGUiO3M6NToibG9naW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1768639552),
 ('w8g6QSISoBiFiPCR3cRPjxJ05GZkfWdKGsxhO8CG', 2, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiVmwwZlVFS3JxNVlCQzM0V1pXZHZWbE1neFZVM2dpUnFOQ003NjN5SCI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjI6e3M6MzoidXJsIjtzOjM4OiJodHRwOi8vbG9jYWxob3N0OjgwMDEvc2V0dGluZ3MvcHJvZmlsZSI7czo1OiJyb3V0ZSI7czoxMjoicHJvZmlsZS5lZGl0Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1768642003);
 
@@ -415,20 +421,20 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 --
 
 CREATE TABLE `students` (
-  `id` int(11) NOT NULL,
-  `nisn` varchar(20) NOT NULL,
-  `nis` varchar(20) DEFAULT NULL,
-  `name` varchar(100) NOT NULL,
-  `class_id` int(11) DEFAULT NULL,
-  `gender` enum('L','P') DEFAULT NULL,
-  `birth_place` varchar(100) DEFAULT NULL,
+  `id` int NOT NULL,
+  `nisn` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `nis` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `class_id` int DEFAULT NULL,
+  `gender` enum('L','P') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `birth_place` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `birth_date` date DEFAULT NULL,
-  `religion` varchar(50) DEFAULT NULL,
-  `address` text DEFAULT NULL,
-  `photo_url` varchar(255) DEFAULT NULL,
-  `qr_code_path` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `religion` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `address` text COLLATE utf8mb4_general_ci,
+  `photo_url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `qr_code_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -474,12 +480,17 @@ INSERT INTO `students` (`id`, `nisn`, `nis`, `name`, `class_id`, `gender`, `birt
 --
 
 CREATE TABLE `users` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `userable_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `userable_id` bigint UNSIGNED DEFAULT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  `remember_token` varchar(100) DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `two_factor_secret` text COLLATE utf8mb4_unicode_ci,
+  `two_factor_recovery_codes` text COLLATE utf8mb4_unicode_ci,
+  `two_factor_confirmed_at` timestamp NULL DEFAULT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -488,9 +499,43 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Admin SAPA Raudha', 'admin@sapa.com', NULL, '$2y$12$eX9TrDP06FC2vVpgSheGoOzeat8Mat7DIBrQ0GAWUUORAMalxF5u6', NULL, '2026-01-17 01:42:21', '2026-01-17 01:42:29'),
-(2, 'Bayu Septiana Aziz', 'admin@ra-alislam.sch.id', NULL, '$2y$12$WIx6lj909prmPNB26I6Am.t685MlLziV0iOqhqc1vaY4VNBZ868EO', NULL, '2026-01-17 01:44:57', '2026-01-17 02:25:43');
+INSERT INTO `users` (`id`, `name`, `email`, `userable_type`, `userable_id`, `email_verified_at`, `password`, `two_factor_secret`, `two_factor_recovery_codes`, `two_factor_confirmed_at`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Admin SAPA Raudha', 'admin@sapa.com', NULL, NULL, NULL, '$2y$12$eX9TrDP06FC2vVpgSheGoOzeat8Mat7DIBrQ0GAWUUORAMalxF5u6', NULL, NULL, NULL, NULL, '2026-01-17 01:42:21', '2026-01-17 01:42:29'),
+(2, 'Administrator', 'admin@ra-alislam.sch.id', 'App\\Models\\Guru', 1, NULL, '$2y$12$WIx6lj909prmPNB26I6Am.t685MlLziV0iOqhqc1vaY4VNBZ868EO', NULL, NULL, NULL, 'J67gyKgELPhWY1xa2Kpf0p9y0DjfLqZ4DTkMbU5gLbzLz6vUfwlwVykNi5AK', '2026-01-17 01:44:57', '2026-01-19 11:01:26'),
+(3, 'Eulis Sukmayati', 'guru2@sapa-raudha.local', 'App\\Models\\Guru', 2, NULL, '$2y$12$iR8gZIQhu/blfepXBu8XzOSpr2tsKqkpXpyZHpOQLDWPLET1CIULK', NULL, NULL, NULL, NULL, '2026-01-19 11:01:27', '2026-01-19 11:01:27'),
+(4, 'Elis Nurjanah', 'guru3@sapa-raudha.local', 'App\\Models\\Guru', 3, NULL, '$2y$12$2F1x6QIeZWr2tDbk2wHMNuO3FTsArD76ZlNhLmnXTuDHf2ECZHghe', NULL, NULL, NULL, NULL, '2026-01-19 11:01:28', '2026-01-19 11:01:28'),
+(5, 'Ecin Nurbayanti', 'guru4@sapa-raudha.local', 'App\\Models\\Guru', 4, NULL, '$2y$12$SUhNFHhMTrneEpvE1ZGcl.iO1jwMXqz1V4p1Jb92GIJd8gYmgSfVS', NULL, NULL, NULL, NULL, '2026-01-19 11:01:29', '2026-01-19 11:01:29'),
+(6, 'Lilis Farida', 'guru5@sapa-raudha.local', 'App\\Models\\Guru', 5, NULL, '$2y$12$WBKUK6sIJZfvEmt9QOHRpukEeQtPcP0hophZywWVnqDMZQbVMn8jK', NULL, NULL, NULL, NULL, '2026-01-19 11:01:30', '2026-01-19 11:01:30'),
+(7, 'AAS BENI HIDAYAT', '250001@ra-alislam.sch.id', 'App\\Models\\ParentModel', 1, NULL, '$2y$12$7QXAGEPsQYnJ.OemUAX6x.TKNmUizCF4icpMLOLKYz2eGB82OSF7S', NULL, NULL, NULL, NULL, '2026-01-19 11:01:31', '2026-01-19 11:01:31'),
+(8, 'WARDIMAN', '250002@ra-alislam.sch.id', 'App\\Models\\ParentModel', 2, NULL, '$2y$12$VM5iVurVSjMvwKazBDYZvOFNcD3rlvK1EOrAHHAsKyQQ2u9LNL3nO', NULL, NULL, NULL, NULL, '2026-01-19 11:01:32', '2026-01-19 11:01:32'),
+(9, 'DIDI JUMADI', '250003@ra-alislam.sch.id', 'App\\Models\\ParentModel', 3, NULL, '$2y$12$j0fypFPgGxPF29b0N/gtCuBk.jN.YHIrdmbOxO/Ih0wl5SOISi89K', NULL, NULL, NULL, NULL, '2026-01-19 11:01:33', '2026-01-19 11:01:33'),
+(10, 'HERI PERMANA', '250005@ra-alislam.sch.id', 'App\\Models\\ParentModel', 4, NULL, '$2y$12$QYdkWy0q1SywXQuO.kBn8.QTKYsO9L7NRl4ZIB5ydsbnYA4b8tTDS', NULL, NULL, NULL, NULL, '2026-01-19 11:01:33', '2026-01-19 11:01:33'),
+(11, 'AJIS', '250006@ra-alislam.sch.id', 'App\\Models\\ParentModel', 5, NULL, '$2y$12$MOu5q2CDY4VIWKR1adNbFunVQie/RygbOltPi7vRCy6xY/dOXCFyG', NULL, NULL, NULL, NULL, '2026-01-19 11:01:34', '2026-01-19 11:01:34'),
+(12, 'SAEPULOH', '250008@ra-alislam.sch.id', 'App\\Models\\ParentModel', 6, NULL, '$2y$12$xqmhjtVVANTPYYprh/tSa.IPjzh30oF.q6kxaQkaosPcLxwvrDzYu', NULL, NULL, NULL, NULL, '2026-01-19 11:01:35', '2026-01-19 11:01:35'),
+(13, 'SUPRIATNA', '250009@ra-alislam.sch.id', 'App\\Models\\ParentModel', 7, NULL, '$2y$12$V0ueVcivhREQlETUJdBOGOD7d7gt7HZiYe3EpotmTF0oKGwyXOV9y', NULL, NULL, NULL, NULL, '2026-01-19 11:01:36', '2026-01-19 11:01:36'),
+(14, 'AGIS ROHIMAT', '250010@ra-alislam.sch.id', 'App\\Models\\ParentModel', 8, NULL, '$2y$12$XF/X6vqAqsBa8fpQf9j.4edl7wwSI2DlpVHBNmfErSIRj9k8nZbla', NULL, NULL, NULL, NULL, '2026-01-19 11:01:38', '2026-01-19 11:01:38'),
+(15, 'AHMAD SUJAI', '250011@ra-alislam.sch.id', 'App\\Models\\ParentModel', 9, NULL, '$2y$12$J21hG4sxCF1pDvitiUEmQ.HYdYXLabYT2PkWnVEg2YpTf4s8PLZla', NULL, NULL, NULL, NULL, '2026-01-19 11:01:39', '2026-01-19 11:01:39'),
+(16, 'AAS AGIS KUSWAYA', '250004@ra-alislam.sch.id', 'App\\Models\\ParentModel', 10, NULL, '$2y$12$az/1sGOOcNdryv3Z6oop5uSJvcuq/b82bcqviE677o1U6yCWAf5Wu', NULL, NULL, NULL, NULL, '2026-01-19 11:01:40', '2026-01-19 11:01:40'),
+(17, 'AGUS HERYANA', '250007@ra-alislam.sch.id', 'App\\Models\\ParentModel', 11, NULL, '$2y$12$IhwNyGdnSPbanWlckwh7VOVs0iYIWK8nwICr4h7dUJzik1m8fn1ee', NULL, NULL, NULL, NULL, '2026-01-19 11:01:41', '2026-01-19 11:01:41'),
+(18, 'JEJEN JENAL ARIPIN', '250012@ra-alislam.sch.id', 'App\\Models\\ParentModel', 12, NULL, '$2y$12$tOVGBRispiKS6xG5g27kMOoAw/73XjvRXs70uuj672JBoyR7uo0m2', NULL, NULL, NULL, NULL, '2026-01-19 11:01:42', '2026-01-19 11:01:42'),
+(19, 'SYARIF HIDAYAT', '250013@ra-alislam.sch.id', 'App\\Models\\ParentModel', 13, NULL, '$2y$12$YCQk6RkFs7LH/GIph6EvW.rvyIBo8Z6nfm7Ae54iAYskDQiFKUn86', NULL, NULL, NULL, NULL, '2026-01-19 11:01:43', '2026-01-19 11:01:43'),
+(20, 'NANANG FRIATNA', '240001@ra-alislam.sch.id', 'App\\Models\\ParentModel', 14, NULL, '$2y$12$6e0hB60c5MAgTGXI3J4KzuiuOcIHL8LCH8jjMhAPdZTxrQjfxdcE2', NULL, NULL, NULL, NULL, '2026-01-19 11:01:44', '2026-01-19 11:01:44'),
+(21, 'DALI PERMADI', '240002@ra-alislam.sch.id', 'App\\Models\\ParentModel', 15, NULL, '$2y$12$BdmssYw9n3aiP5.R0U77xekZTrSyMFw5eUueiEudF9BRVjRo1yOUW', NULL, NULL, NULL, NULL, '2026-01-19 11:01:45', '2026-01-19 11:01:45'),
+(22, 'DEDE MULYADI', '240003@ra-alislam.sch.id', 'App\\Models\\ParentModel', 16, NULL, '$2y$12$QmmKgMJROOoYrE6UO.CDIeV5YyqtDwqUHQ8oDq8hPcD6s4noKFTHa', NULL, NULL, NULL, NULL, '2026-01-19 11:01:45', '2026-01-19 11:01:45'),
+(23, 'SANUSI', '240004@ra-alislam.sch.id', 'App\\Models\\ParentModel', 17, NULL, '$2y$12$DOtRP.6yiD8SaLMn78YxqeQRfYKvUCN6cssOGYIjbcP22oA1GXtRC', NULL, NULL, NULL, NULL, '2026-01-19 11:01:46', '2026-01-19 11:01:46'),
+(24, 'HENDI', '250014@ra-alislam.sch.id', 'App\\Models\\ParentModel', 18, NULL, '$2y$12$0WM9ElcMMwD6xKwtHDTp..Q9UFKaqjR9ZV.Q0yDaT66vmcjDA8BZS', NULL, NULL, NULL, NULL, '2026-01-19 11:01:47', '2026-01-19 11:01:47'),
+(25, 'CECEP SAHARA', '240005@ra-alislam.sch.id', 'App\\Models\\ParentModel', 19, NULL, '$2y$12$uTvaouNo5ohFoWr3HZzfwOZ3Sum0ezVQWPUAK/GKP4YYTrCdbyMPu', NULL, NULL, NULL, NULL, '2026-01-19 11:01:48', '2026-01-19 11:01:48'),
+(26, 'DODO HENDRA', '240006@ra-alislam.sch.id', 'App\\Models\\ParentModel', 20, NULL, '$2y$12$Ofa06K9UBG6VaQqm4awj0e8qGrbiTkFI65fg6sgnktkqDKBHTReDq', NULL, NULL, NULL, NULL, '2026-01-19 11:01:49', '2026-01-19 11:01:49'),
+(27, 'EDI SUPRIADI', '240007@ra-alislam.sch.id', 'App\\Models\\ParentModel', 21, NULL, '$2y$12$1DK2CcR1nZwSh7oP.pUvfOvJZZePaTMHtfA8hhT6CscZlDR/He8lG', NULL, NULL, NULL, NULL, '2026-01-19 11:01:50', '2026-01-19 11:01:50'),
+(28, 'JAJANG SURYANA', '240008@ra-alislam.sch.id', 'App\\Models\\ParentModel', 22, NULL, '$2y$12$2Hi483i9jIOG4qG8lqlsnOv2PnQTxZGN/cUzEehLquHhm979XHPv2', NULL, NULL, NULL, NULL, '2026-01-19 11:01:51', '2026-01-19 11:01:51'),
+(29, 'ASEP DODO', '240009@ra-alislam.sch.id', 'App\\Models\\ParentModel', 23, NULL, '$2y$12$UmpOVpDjank3iXbdEN.dzeYe72y7D52PuLel4fpyf4zhFswfpm1Iy', NULL, NULL, NULL, NULL, '2026-01-19 11:01:52', '2026-01-19 11:01:52'),
+(30, 'AZIS MUSLIM', '240010@ra-alislam.sch.id', 'App\\Models\\ParentModel', 24, NULL, '$2y$12$8JmUYUqy4f/9QRxW1M0zyu5LPE8mem3x8m2vCGMtH/VIveQ1GpGrK', NULL, NULL, NULL, NULL, '2026-01-19 11:01:53', '2026-01-19 11:01:53'),
+(31, 'ASEP SAEPULLOH', '240011@ra-alislam.sch.id', 'App\\Models\\ParentModel', 25, NULL, '$2y$12$HcdwXAtSsvgvo9JOH/LdHOXapssDJhh4Jxq4Qz.q8EcFqh0j/fTiW', NULL, NULL, NULL, NULL, '2026-01-19 11:01:54', '2026-01-19 11:01:54'),
+(32, 'AEP SAEPULLOH', '240012@ra-alislam.sch.id', 'App\\Models\\ParentModel', 26, NULL, '$2y$12$DUrWWT6fDuHI3m4wMA/aL.OPJMSXs1afNzZrHgGfiqgGCRwkcGwKy', NULL, NULL, NULL, NULL, '2026-01-19 11:01:56', '2026-01-19 11:01:56'),
+(33, 'NANANG FARIDUDIN', '250015@ra-alislam.sch.id', 'App\\Models\\ParentModel', 27, NULL, '$2y$12$DR4.K7sRFXuBS8C0l5UMee/u29K3uKiWl0IOj7h0HshFMlK41fJhu', NULL, NULL, NULL, NULL, '2026-01-19 11:01:57', '2026-01-19 11:01:57'),
+(34, 'MUHAMAD TOHA', '250016@ra-alislam.sch.id', 'App\\Models\\ParentModel', 28, NULL, '$2y$12$84ZBjO.WTIwaXSATWxH1E.mF8ErUJxZA8.pMMebhR30Hledh5pX76', NULL, NULL, NULL, NULL, '2026-01-19 11:01:57', '2026-01-19 11:01:57'),
+(35, 'DENI HERDIANA', '250017@ra-alislam.sch.id', 'App\\Models\\ParentModel', 29, NULL, '$2y$12$O0t4JuilSzFNnnMRT80fMuZjpziwTHOVGniuyrEpAIvifyYbWrP/K', NULL, NULL, NULL, NULL, '2026-01-19 11:01:58', '2026-01-19 11:01:58'),
+(36, 'AGUS SANJAYA', '240013@ra-alislam.sch.id', 'App\\Models\\ParentModel', 30, NULL, '$2y$12$GH8g99Q/nKOgSqrYFY2oMOSysax/NXvMaJSzkMqKYwG0zBLYo53HO', NULL, NULL, NULL, NULL, '2026-01-19 11:01:59', '2026-01-19 11:01:59');
 
 --
 -- Indexes for dumped tables
@@ -626,7 +671,8 @@ ALTER TABLE `students`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_email_unique` (`email`);
+  ADD UNIQUE KEY `users_email_unique` (`email`),
+  ADD KEY `users_userable_type_userable_id_index` (`userable_type`,`userable_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -636,79 +682,79 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `attachments`
 --
 ALTER TABLE `attachments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `classes`
 --
 ALTER TABLE `classes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `gurus`
 --
 ALTER TABLE `gurus`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `jobs`
 --
 ALTER TABLE `jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `leave_requests`
 --
 ALTER TABLE `leave_requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `parents`
 --
 ALTER TABLE `parents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `password_reset_requests`
 --
 ALTER TABLE `password_reset_requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- Constraints for dumped tables

@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { CalendarDays, Edit, Eye, Plus, Search, Trash2, UserCheck } from 'lucide-react';
+import { CalendarDays, Edit, Eye, Plus, Search, Trash2, UserCheck, BarChart3 } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 
 import Heading from '@/components/heading';
@@ -211,6 +211,12 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                             </Link>
                         </Button>
                         <Button variant="outline" asChild>
+                            <Link href="/attendance/reports">
+                                <BarChart3 className="mr-2 h-4 w-4" />
+                                Laporan Kehadiran
+                            </Link>
+                        </Button>
+                        <Button variant="outline" asChild>
                             <Link href="/classes">
                                 <UserCheck className="mr-2 h-4 w-4" />
                                 Presensi Harian Kelas
@@ -219,181 +225,181 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                     </div>
                 </div>
 
-                {/* Filters */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Filter Data</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleSearch} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Siswa</label>
-                                <Select
-                                    value={searchFilters.student_id || 'all'}
-                                    onValueChange={(value) => handleFilterChange('student_id', value)}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Pilih siswa" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">Semua Siswa</SelectItem>
-                                        {students.map((student) => (
-                                            <SelectItem key={student.id} value={student.id.toString()}>
-                                                {student.name} ({student.nis})
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                {/* Detail View Filters */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Filter Data Detail</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <form onSubmit={handleSearch} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Siswa</label>
+                                        <Select
+                                            value={searchFilters.student_id || 'all'}
+                                            onValueChange={(value) => handleFilterChange('student_id', value)}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Pilih siswa" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">Semua Siswa</SelectItem>
+                                                {students.map((student) => (
+                                                    <SelectItem key={student.id} value={student.id.toString()}>
+                                                        {student.name} ({student.nis})
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Status</label>
-                                <Select
-                                    value={searchFilters.status || 'all'}
-                                    onValueChange={(value) => handleFilterChange('status', value)}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Pilih status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">Semua Status</SelectItem>
-                                        {statuses.map((status) => (
-                                            <SelectItem key={status} value={status}>
-                                                {status === 'hadir' ? 'Hadir' :
-                                                 status === 'sakit' ? 'Sakit' :
-                                                 status === 'izin' ? 'Izin' : 'Alpa'}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Status</label>
+                                        <Select
+                                            value={searchFilters.status || 'all'}
+                                            onValueChange={(value) => handleFilterChange('status', value)}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Pilih status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">Semua Status</SelectItem>
+                                                {statuses.map((status) => (
+                                                    <SelectItem key={status} value={status}>
+                                                        {status === 'hadir' ? 'Hadir' :
+                                                         status === 'sakit' ? 'Sakit' :
+                                                         status === 'izin' ? 'Izin' : 'Alpa'}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Tanggal Mulai</label>
-                                <Input
-                                    type="date"
-                                    value={searchFilters.start_date || ''}
-                                    onChange={(e) => handleFilterChange('start_date', e.target.value)}
-                                />
-                            </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Tanggal Mulai</label>
+                                        <Input
+                                            type="date"
+                                            value={searchFilters.start_date || ''}
+                                            onChange={(e) => handleFilterChange('start_date', e.target.value)}
+                                        />
+                                    </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Tanggal Akhir</label>
-                                <Input
-                                    type="date"
-                                    value={searchFilters.end_date || ''}
-                                    onChange={(e) => handleFilterChange('end_date', e.target.value)}
-                                />
-                            </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Tanggal Akhir</label>
+                                        <Input
+                                            type="date"
+                                            value={searchFilters.end_date || ''}
+                                            onChange={(e) => handleFilterChange('end_date', e.target.value)}
+                                        />
+                                    </div>
 
-                            <div className="flex gap-2 md:col-span-2 lg:col-span-4">
-                                <Button type="submit">
-                                    <Search className="mr-2 h-4 w-4" />
-                                    Cari
-                                </Button>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => {
-                                        setSearchFilters({
-                                            student_id: 'all',
-                                            status: 'all',
-                                            start_date: '',
-                                            end_date: '',
-                                        });
-                                        router.get('/attendance', {}, { preserveState: true, replace: true });
-                                    }}
-                                >
-                                    Reset
-                                </Button>
-                            </div>
-                        </form>
-                    </CardContent>
-                </Card>
+                                    <div className="flex gap-2 md:col-span-2 lg:col-span-4">
+                                        <Button type="submit">
+                                            <Search className="mr-2 h-4 w-4" />
+                                            Cari
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={() => {
+                                                setSearchFilters({
+                                                    student_id: 'all',
+                                                    status: 'all',
+                                                    start_date: '',
+                                                    end_date: '',
+                                                });
+                                                router.get('/attendance', {}, { preserveState: true, replace: true });
+                                            }}
+                                        >
+                                            Reset
+                                        </Button>
+                                    </div>
+                                </form>
+                            </CardContent>
+                        </Card>
 
-                {/* Attendance Table */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Data Kehadiran</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Tanggal</TableHead>
-                                    <TableHead>Siswa</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Check In</TableHead>
-                                    <TableHead>Check Out</TableHead>
-                                    <TableHead>Catatan</TableHead>
-                                    <TableHead>Aksi</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {attendance.data.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={7} className="text-center py-8">
-                                            Tidak ada data kehadiran
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    attendance.data.map((record) => (
-                                        <TableRow key={record.id}>
-                                            <TableCell>
-                                                <div className="flex items-center gap-2">
-                                                    <CalendarDays className="h-4 w-4" />
-                                                    {formatDate(record.date)}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div>
-                                                    <div className="font-medium">{record.student.name}</div>
-                                                    <div className="text-sm text-muted-foreground">
-                                                        NIS: {record.student.nis}
-                                                    </div>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>{getStatusBadge(record.status)}</TableCell>
-                                            <TableCell>{formatTime(record.check_in)}</TableCell>
-                                            <TableCell>{formatTime(record.check_out)}</TableCell>
-                                            <TableCell>
-                                                {record.notes || '-'}
-                                                {record.scanner && (
-                                                    <div className="text-xs text-muted-foreground mt-1">
-                                                        Oleh: {record.scanner.name}
-                                                    </div>
-                                                )}
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex gap-2">
-                                                    <Button variant="outline" size="sm" asChild>
-                                                        <Link href={`/attendance/${record.id}`}>
-                                                            <Eye className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
-                                                    <Button variant="outline" size="sm" asChild>
-                                                        <Link href={`/attendance/${record.id}/edit`}>
-                                                            <Edit className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => handleDelete(record)}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
+                        {/* Attendance Table */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Data Kehadiran</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Tanggal</TableHead>
+                                            <TableHead>Siswa</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead>Check In</TableHead>
+                                            <TableHead>Check Out</TableHead>
+                                            <TableHead>Catatan</TableHead>
+                                            <TableHead>Aksi</TableHead>
                                         </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {attendance.data.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell colSpan={7} className="text-center py-8">
+                                                    Tidak ada data kehadiran
+                                                </TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            attendance.data.map((record) => (
+                                                <TableRow key={record.id}>
+                                                    <TableCell>
+                                                        <div className="flex items-center gap-2">
+                                                            <CalendarDays className="h-4 w-4" />
+                                                            {formatDate(record.date)}
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div>
+                                                            <div className="font-medium">{record.student.name}</div>
+                                                            <div className="text-sm text-muted-foreground">
+                                                                NIS: {record.student.nis}
+                                                            </div>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>{getStatusBadge(record.status)}</TableCell>
+                                                    <TableCell>{formatTime(record.check_in)}</TableCell>
+                                                    <TableCell>{formatTime(record.check_out)}</TableCell>
+                                                    <TableCell>
+                                                        {record.notes || '-'}
+                                                        {record.scanner && (
+                                                            <div className="text-xs text-muted-foreground mt-1">
+                                                                Oleh: {record.scanner.name}
+                                                            </div>
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex gap-2">
+                                                            <Button variant="outline" size="sm" asChild>
+                                                                <Link href={`/attendance/${record.id}`}>
+                                                                    <Eye className="h-4 w-4" />
+                                                                </Link>
+                                                            </Button>
+                                                            <Button variant="outline" size="sm" asChild>
+                                                                <Link href={`/attendance/${record.id}/edit`}>
+                                                                    <Edit className="h-4 w-4" />
+                                                                </Link>
+                                                            </Button>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={() => handleDelete(record)}
+                                                            >
+                                                                <Trash2 className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
 
-                        {/* Pagination would go here if needed */}
-                    </CardContent>
-                </Card>
+                                {/* Pagination would go here if needed */}
+                            </CardContent>
+                        </Card>
 
                 {/* Delete Confirmation Dialog */}
                 <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

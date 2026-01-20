@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kelas;
+use App\Models\AcademicYear;
 use App\Models\Guru;
+use App\Models\Kelas;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -47,10 +48,18 @@ class KelasController extends Controller
         // Get unique academic years for filter
         $academicYears = Kelas::select('academic_year')->distinct()->orderBy('academic_year', 'desc')->pluck('academic_year');
 
+        // Get all academic years with full data for management
+        $allAcademicYears = AcademicYear::orderBy('year', 'desc')->get();
+
+        // Get active academic year
+        $activeAcademicYear = AcademicYear::getActive();
+
         return Inertia::render('classes/index', [
             'classes' => $classes,
             'groups' => $groups,
             'academic_years' => $academicYears,
+            'all_academic_years' => $allAcademicYears,
+            'active_academic_year' => $activeAcademicYear,
             'filters' => $request->only(['search', 'group', 'academic_year']),
         ]);
     }

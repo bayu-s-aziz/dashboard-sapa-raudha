@@ -1,7 +1,7 @@
 import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
-import { ArrowLeft, Save, Trash2, Upload } from 'lucide-react';
-import { type FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
+import { ArrowLeft, Save, Trash2 } from 'lucide-react';
+import { type FormEvent, useEffect, useState } from 'react';
 
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
@@ -64,7 +64,7 @@ export default function AnnouncementEdit({ announcement, gurus, classes }: Props
         { title: 'Edit Pengumuman', href: '#' },
     ];
 
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, processing, errors } = useForm({
         title: announcement.title,
         content: announcement.content,
         author_id: announcement.author_id.toString(),
@@ -107,7 +107,7 @@ export default function AnnouncementEdit({ announcement, gurus, classes }: Props
             });
             // Reload the page to update the attachments list
             window.location.reload();
-        } catch (error) {
+        } catch {
             toast({
                 title: 'Gagal',
                 description: 'Terjadi kesalahan saat menghapus lampiran',

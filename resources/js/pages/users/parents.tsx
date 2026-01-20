@@ -90,11 +90,14 @@ const breadcrumbs: BreadcrumbItem[] = [
         title: 'Manajemen Pengguna',
         href: '#',
     },
+    {
+        title: 'Orang Tua',
+        href: '#',
+    },
 ];
 
-export default function UsersIndex({ users, filters }: Props) {
+export default function ParentsIndex({ users, filters }: Props) {
     const [search, setSearch] = useState(filters.search || '');
-    const [type, setType] = useState(filters.type || 'all');
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [userToDelete, setUserToDelete] = useState<User | null>(null);
     const { props } = usePage();
@@ -121,28 +124,13 @@ export default function UsersIndex({ users, filters }: Props) {
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
         router.get(
-            '/users',
-            { search, type: type !== 'all' ? type : undefined },
-            { preserveState: true },
-        );
-    };
-
-    const handleTypeChange = (value: string) => {
-        setType(value);
-        router.get(
-            '/users',
-            {
-                search: search || undefined,
-                type: value !== 'all' ? value : undefined,
-            },
+            '/users/parents',
+            { search },
             { preserveState: true },
         );
     };
 
     const getUserType = (user: User) => {
-        if (user.userable_type === 'App\\Models\\Guru') {
-            return user.userable?.role === 'admin' ? 'Admin' : 'Guru';
-        }
         return 'Orang Tua';
     };
 
@@ -194,22 +182,22 @@ export default function UsersIndex({ users, filters }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Manajemen Pengguna" />
+            <Head title="Manajemen Orang Tua" />
 
             <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <Heading
-                        title="Manajemen Pengguna"
-                        description="Kelola data admin, guru, dan orang tua"
+                        title="Manajemen Orang Tua"
+                        description="Kelola akun orang tua siswa"
                     />
                 </div>
 
                 <Card>
                     <CardHeader>
                         <div>
-                            <h3 className="text-lg font-medium">Daftar Pengguna</h3>
+                            <h3 className="text-lg font-medium">Daftar Orang Tua</h3>
                             <p className="text-sm text-muted-foreground">
-                                Cari dan kelola data admin, guru, dan orang tua
+                                Cari dan kelola data orang tua
                             </p>
                         </div>
                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -230,22 +218,6 @@ export default function UsersIndex({ users, filters }: Props) {
                                 </div>
                                 <Button type="submit">Cari</Button>
                             </form>
-
-                            <Select value={type} onValueChange={handleTypeChange}>
-                                <SelectTrigger className="w-45">
-                                    <SelectValue placeholder="Filter Tipe" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">
-                                        Semua Tipe
-                                    </SelectItem>
-                                    <SelectItem value="admin">Admin</SelectItem>
-                                    <SelectItem value="guru">Guru</SelectItem>
-                                    <SelectItem value="parent">
-                                        Orang Tua
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
                         </div>
                     </CardHeader>
 
@@ -412,10 +384,9 @@ export default function UsersIndex({ users, filters }: Props) {
                                 variant="outline"
                                 disabled={users.current_page === 1}
                                 onClick={() =>
-                                    router.get('/users', {
+                                    router.get('/users/parents', {
                                         page: users.current_page - 1,
                                         search: search || undefined,
-                                        type: type !== 'all' ? type : undefined,
                                     })
                                 }
                             >
@@ -425,10 +396,9 @@ export default function UsersIndex({ users, filters }: Props) {
                                 variant="outline"
                                 disabled={users.current_page === users.last_page}
                                 onClick={() =>
-                                    router.get('/users', {
+                                    router.get('/users/parents', {
                                         page: users.current_page + 1,
                                         search: search || undefined,
-                                        type: type !== 'all' ? type : undefined,
                                     })
                                 }
                             >

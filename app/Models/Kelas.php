@@ -39,10 +39,10 @@ class Kelas extends Model
     }
 
     /**
-     * Get announcements targeted to this class.
+     * Get the academic year for this class.
      */
-    public function announcements()
+    public function academicYear()
     {
-        return $this->hasMany(Pengumuman::class, 'target_class_id');
+        return $this->belongsTo(AcademicYear::class, 'academic_year', 'year');
     }
 }

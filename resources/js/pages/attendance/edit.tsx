@@ -45,11 +45,10 @@ interface Attendance {
 
 interface Props {
     attendance: Attendance;
-    students: Student[];
     gurus: Guru[];
 }
 
-export default function AttendanceEdit({ attendance, students, gurus }: Props) {
+export default function AttendanceEdit({ attendance, gurus }: Props) {
     const page = usePage<{ flash?: { success?: string; error?: string } }>();
 
     const breadcrumbs: BreadcrumbItem[] = [

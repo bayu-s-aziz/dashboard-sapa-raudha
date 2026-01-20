@@ -1,5 +1,5 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowLeft, Save, Upload } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import { type FormEvent, useEffect, useState } from 'react';
 
 import Heading from '@/components/heading';
@@ -44,7 +44,7 @@ export default function AnnouncementCreate({ gurus, classes }: Props) {
         { title: 'Buat Pengumuman', href: '/announcements/create' },
     ];
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, processing, errors } = useForm({
         title: '',
         content: '',
         author_id: '',

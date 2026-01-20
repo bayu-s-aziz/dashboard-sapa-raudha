@@ -55,8 +55,8 @@ class AttendanceController extends Controller
             'student_id' => 'required|exists:students,id',
             'date' => 'required|date',
             'status' => 'required|in:hadir,sakit,izin,alpa',
-            'check_in' => 'nullable|date_format:H:i:s',
-            'check_out' => 'nullable|date_format:H:i:s',
+            'check_in' => 'nullable|regex:/^(\d{2}:\d{2})?$/',
+            'check_out' => 'nullable|regex:/^(\d{2}:\d{2})?$/',
             'notes' => 'nullable|string',
             'scanned_by' => 'nullable|exists:gurus,id',
         ]);
@@ -391,6 +391,246 @@ class AttendanceController extends Controller
     }
 
     /**
+     * Display attendance reports (Inertia version)
+     */
+    public function reports(Request $request)
+    {
+        $periodType = $request->get('period_type', 'weekly');
+        $periodDate = $request->get('period_date', now()->toDateString());
+        $classId = $request->get('class_id');
+
+        // Calculate period range based on type
+        if ($periodType === 'weekly') {
+            $startDate = Carbon::parse($periodDate)->startOfWeek();
+            $endDate = Carbon::parse($periodDate)->endOfWeek();
+            $period = $startDate->format('Y-\WW');
+        } else { // monthly
+            $startDate = Carbon::parse($periodDate)->startOfMonth();
+            $endDate = Carbon::parse($periodDate)->endOfMonth();
+            $period = $startDate->format('Y-m');
+        }
+
+        // Get students - filter by class if specified
+        $studentsQuery = Siswa::with('kelas');
+        if ($classId && $classId !== 'all') {
+            $studentsQuery->where('class_id', $classId);
+        }
+        $students = $studentsQuery->get();
+
+        $summary = [];
+
+        foreach ($students as $student) {
+            // Get attendance data for this student within the period
+            $attendanceData = Kehadiran::where('student_id', $student->id)
+                ->whereBetween('date', [$startDate, $endDate])
+                ->get();
+
+            $statusCounts = [
+                'hadir' => 0,
+                'sakit' => 0,
+                'izin' => 0,
+                'alpa' => 0,
+            ];
+
+            // Count attendance by status
+            foreach ($attendanceData as $record) {
+                if (isset($statusCounts[$record->status])) {
+                    $statusCounts[$record->status]++;
+                }
+            }
+
+            $summary[] = [
+                'student' => [
+                    'id' => $student->id,
+                    'name' => $student->name,
+                    'nis' => $student->nis,
+                ],
+                'period' => $period,
+                'period_type' => $periodType,
+                'hadir' => $statusCounts['hadir'],
+                'sakit' => $statusCounts['sakit'],
+                'izin' => $statusCounts['izin'],
+                'alpa' => $statusCounts['alpa'],
+            ];
+        }
+
+        // Sort by student name
+        usort($summary, function($a, $b) {
+            return strcmp($a['student']['name'], $b['student']['name']);
+        });
+
+        // Get filter options
+        $classes = Kelas::with('homeroomTeacher')->orderBy('name')->get();
+
+        return Inertia::render('attendance/reports', [
+            'attendance_summary' => $summary,
+            'classes' => $classes,
+            'filters' => $request->only(['period_type', 'period_date', 'class_id']),
+        ]);
+    }
+
+    /**
+     * Export attendance reports data (JSON API)
+     */
+    public function exportReports(Request $request)
+    {
+        $periodType = $request->get('period_type', 'weekly');
+        $periodDate = $request->get('period_date', now()->toDateString());
+        $classId = $request->get('class_id');
+
+        // Calculate period range based on type
+        if ($periodType === 'weekly') {
+            $startDate = Carbon::parse($periodDate)->startOfWeek();
+            $endDate = Carbon::parse($periodDate)->endOfWeek();
+            $period = $startDate->format('Y-\WW');
+        } else { // monthly
+            $startDate = Carbon::parse($periodDate)->startOfMonth();
+            $endDate = Carbon::parse($periodDate)->endOfMonth();
+            $period = $startDate->format('Y-m');
+        }
+
+        // Get students - filter by class if specified
+        $studentsQuery = Siswa::with('kelas');
+        if ($classId && $classId !== 'all') {
+            $studentsQuery->where('class_id', $classId);
+        }
+        $students = $studentsQuery->get();
+
+        $summary = [];
+
+        foreach ($students as $student) {
+            // Get attendance data for this student within the period
+            $attendanceData = Kehadiran::where('student_id', $student->id)
+                ->whereBetween('date', [$startDate, $endDate])
+                ->get();
+
+            $statusCounts = [
+                'hadir' => 0,
+                'sakit' => 0,
+                'izin' => 0,
+                'alpa' => 0,
+            ];
+
+            // Count attendance by status
+            foreach ($attendanceData as $record) {
+                if (isset($statusCounts[$record->status])) {
+                    $statusCounts[$record->status]++;
+                }
+            }
+
+            $summary[] = [
+                'student' => [
+                    'id' => $student->id,
+                    'name' => $student->name,
+                    'nis' => $student->nis,
+                ],
+                'period' => $period,
+                'period_type' => $periodType,
+                'hadir' => $statusCounts['hadir'],
+                'sakit' => $statusCounts['sakit'],
+                'izin' => $statusCounts['izin'],
+                'alpa' => $statusCounts['alpa'],
+            ];
+        }
+
+        // Sort by student name
+        usort($summary, function($a, $b) {
+            return strcmp($a['student']['name'], $b['student']['name']);
+        });
+
+        // Get filter options
+        $classes = Kelas::with('homeroomTeacher')->orderBy('name')->get();
+
+        return response()->json([
+            'attendance_summary' => $summary,
+            'classes' => $classes,
+            'filters' => $request->only(['period_type', 'period_date', 'class_id']),
+        ]);
+    }
+
+    /**
+    private function indexSummary(Request $request)
+    {
+        $periodType = $request->get('period_type', 'weekly');
+        $periodDate = $request->get('period_date', now()->toDateString());
+        $classId = $request->get('class_id');
+
+        // Calculate period range based on type
+        if ($periodType === 'weekly') {
+            $startDate = Carbon::parse($periodDate)->startOfWeek();
+            $endDate = Carbon::parse($periodDate)->endOfWeek();
+            $period = $startDate->format('Y-\WW');
+        } else { // monthly
+            $startDate = Carbon::parse($periodDate)->startOfMonth();
+            $endDate = Carbon::parse($periodDate)->endOfMonth();
+            $period = $startDate->format('Y-m');
+        }
+
+        // Get students - filter by class if specified
+        $studentsQuery = Siswa::with('kelas');
+        if ($classId && $classId !== 'all') {
+            $studentsQuery->where('class_id', $classId);
+        }
+        $students = $studentsQuery->get();
+
+        $summary = [];
+
+        foreach ($students as $student) {
+            // Get attendance data for this student within the period
+            $attendanceData = Kehadiran::where('student_id', $student->id)
+                ->whereBetween('date', [$startDate, $endDate])
+                ->get();
+
+            $statusCounts = [
+                'hadir' => 0,
+                'sakit' => 0,
+                'izin' => 0,
+                'alpa' => 0,
+            ];
+
+            // Count attendance by status
+            foreach ($attendanceData as $record) {
+                if (isset($statusCounts[$record->status])) {
+                    $statusCounts[$record->status]++;
+                }
+            }
+
+            $summary[] = [
+                'student' => [
+                    'id' => $student->id,
+                    'name' => $student->name,
+                    'nis' => $student->nis,
+                ],
+                'period' => $period,
+                'period_type' => $periodType,
+                'hadir' => $statusCounts['hadir'],
+                'sakit' => $statusCounts['sakit'],
+                'izin' => $statusCounts['izin'],
+                'alpa' => $statusCounts['alpa'],
+            ];
+        }
+
+        // Sort by student name
+        usort($summary, function($a, $b) {
+            return strcmp($a['student']['name'], $b['student']['name']);
+        });
+
+        // Get filter options
+        $studentsList = Siswa::orderBy('name')->get();
+        $classes = Kelas::orderBy('name')->get();
+        $statuses = ['hadir', 'sakit', 'izin', 'alpa'];
+
+        return Inertia::render('attendance/index', [
+            'attendance' => (object)['data' => []], // Empty paginated object for detail view
+            'attendance_summary' => $summary,
+            'students' => $studentsList,
+            'classes' => $classes,
+            'statuses' => $statuses,
+            'filters' => $request->only(['student_id', 'status', 'start_date', 'end_date', 'view_mode', 'period_type', 'period_date', 'class_id']),
+        ]);
+    }
+
+    /**
      * Show form for creating attendance (Inertia version)
      */
     public function create()
@@ -413,8 +653,8 @@ class AttendanceController extends Controller
             'student_id' => 'required|exists:students,id',
             'date' => 'required|date',
             'status' => 'required|in:hadir,sakit,izin,alpa',
-            'check_in' => 'nullable|date_format:H:i:s',
-            'check_out' => 'nullable|date_format:H:i:s',
+            'check_in' => 'nullable|regex:/^(\d{2}:\d{2})?$/',
+            'check_out' => 'nullable|regex:/^(\d{2}:\d{2})?$/',
             'notes' => 'nullable|string',
             'scanned_by' => 'nullable|exists:gurus,id',
         ]);
@@ -441,9 +681,22 @@ class AttendanceController extends Controller
                 ], 409);
             }
 
-            $attendance = Kehadiran::create($request->only([
+            $data = $request->only([
                 'student_id', 'date', 'status', 'check_in', 'check_out', 'notes', 'scanned_by'
-            ]));
+            ]);
+
+            // Convert string IDs to integers
+            $data['student_id'] = (int) $data['student_id'];
+            if ($data['scanned_by']) {
+                $data['scanned_by'] = (int) $data['scanned_by'];
+            }
+
+            // Convert empty strings to null for time fields
+            $data['check_in'] = $data['check_in'] ?: null;
+            $data['check_out'] = $data['check_out'] ?: null;
+            $data['scanned_by'] = $data['scanned_by'] ?: null;
+
+            $attendance = Kehadiran::create($data);
 
             if ($request->header('X-Inertia')) {
                 return redirect()->route('attendance.show', $attendance)->with('success', 'Presensi berhasil dibuat');

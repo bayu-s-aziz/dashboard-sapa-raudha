@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Edit, Eye, MoreHorizontal, Search, Trash2, Plus, FileText } from 'lucide-react';
+import { Edit, Eye, MoreHorizontal, Search, Trash2, Plus } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 
 import Heading from '@/components/heading';

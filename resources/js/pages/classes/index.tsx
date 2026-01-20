@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Edit, Eye, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
+import { Edit, Eye, MoreHorizontal, Plus, Search, Trash2, Settings } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 
 import Heading from '@/components/heading';
@@ -58,6 +58,16 @@ interface Kelas {
     created_at: string;
 }
 
+interface AcademicYear {
+    id: number;
+    year: string;
+    is_active: boolean;
+    start_date: string | null;
+    end_date: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
 interface PaginatedClasses {
     data: Kelas[];
     current_page: number;
@@ -70,6 +80,8 @@ interface Props {
     classes: PaginatedClasses;
     groups: string[];
     academic_years: string[];
+    all_academic_years: AcademicYear[];
+    active_academic_year: AcademicYear | null;
     filters: {
         search?: string;
         group?: string;
@@ -77,7 +89,7 @@ interface Props {
     };
 }
 
-export default function ClassesIndex({ classes, groups, academic_years, filters }: Props) {
+export default function ClassesIndex({ classes, groups, academic_years, all_academic_years, active_academic_year, filters }: Props) {
     const page = usePage<{ flash?: { success?: string; error?: string } }>();
 
     const [search, setSearch] = useState(filters.search || '');
@@ -87,6 +99,8 @@ export default function ClassesIndex({ classes, groups, academic_years, filters 
     const [classToDelete, setClassToDelete] = useState<Kelas | null>(null);
     const [addYearDialogOpen, setAddYearDialogOpen] = useState(false);
     const [newAcademicYear, setNewAcademicYear] = useState('');
+    const [setActiveDialogOpen, setSetActiveDialogOpen] = useState(false);
+    const [academicYearsList, setAcademicYearsList] = useState<AcademicYear[]>([]);
 
     useEffect(() => {
         const flash = page.props.flash || {};
@@ -105,6 +119,11 @@ export default function ClassesIndex({ classes, groups, academic_years, filters 
             });
         }
     }, [page.props.flash]);
+
+    useEffect(() => {
+        // Set academic years from props
+        setAcademicYearsList(all_academic_years || []);
+    }, [all_academic_years]);
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
@@ -171,6 +190,12 @@ export default function ClassesIndex({ classes, groups, academic_years, filters 
         });
     };
 
+    const handleSetActiveAcademicYear = (academicYear: AcademicYear) => {
+        router.put(`/academic-years/${academicYear.id}/set-active`, {}, {
+            preserveScroll: true,
+        });
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Manajemen Kelas" />
@@ -181,19 +206,35 @@ export default function ClassesIndex({ classes, groups, academic_years, filters 
                         title="Manajemen Kelas"
                         description="Kelola data kelas di sistem SAPA Raudha"
                     />
-                    <Button onClick={() => setAddYearDialogOpen(true)}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Tambah Tahun Ajaran
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button
+                            variant="outline"
+                            onClick={() => setSetActiveDialogOpen(true)}
+                        >
+                            <Settings className="mr-2 h-4 w-4" />
+                            Atur Tahun Ajaran Aktif
+                        </Button>
+                        <Button onClick={() => setAddYearDialogOpen(true)}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Tambah Tahun Ajaran
+                        </Button>
+                    </div>
                 </div>
 
                 <Card>
                     <CardHeader>
-                        <div>
-                            <h3 className="text-lg font-medium">Daftar Kelas</h3>
-                            <p className="text-sm text-muted-foreground">
-                                Cari dan kelola data kelas
-                            </p>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h3 className="text-lg font-medium">Daftar Kelas</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Cari dan kelola data kelas
+                                </p>
+                                {active_academic_year && (
+                                    <p className="text-sm text-green-600 mt-1">
+                                        Tahun Ajaran Aktif: <span className="font-semibold">{active_academic_year.year}</span>
+                                    </p>
+                                )}
+                            </div>
                         </div>
                         <form onSubmit={handleSearch} className="space-y-4">
                             <div className="flex flex-col gap-4 md:flex-row">
@@ -476,6 +517,57 @@ export default function ClassesIndex({ classes, groups, academic_years, filters 
                             <Button type="submit">Tambah</Button>
                         </DialogFooter>
                     </form>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={setActiveDialogOpen} onOpenChange={setSetActiveDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Atur Tahun Ajaran Aktif</DialogTitle>
+                        <DialogDescription>
+                            Pilih tahun ajaran yang akan diaktifkan. Tahun ajaran aktif akan digunakan sebagai default untuk operasi sistem.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        {academicYearsList.length === 0 ? (
+                            <p className="text-sm text-muted-foreground">Tidak ada tahun ajaran tersedia.</p>
+                        ) : (
+                            <div className="space-y-2">
+                                {academicYearsList.map((year) => (
+                                    <div
+                                        key={year.id}
+                                        className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-muted/50 ${
+                                            year.is_active ? 'border-green-500 bg-green-50' : ''
+                                        }`}
+                                        onClick={() => handleSetActiveAcademicYear(year)}
+                                    >
+                                        <div>
+                                            <p className="font-medium">{year.year}</p>
+                                            {year.start_date && year.end_date && (
+                                                <p className="text-sm text-muted-foreground">
+                                                    {new Date(year.start_date).toLocaleDateString('id-ID')} - {new Date(year.end_date).toLocaleDateString('id-ID')}
+                                                </p>
+                                            )}
+                                        </div>
+                                        {year.is_active && (
+                                            <Badge variant="default" className="bg-green-500">
+                                                Aktif
+                                            </Badge>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setSetActiveDialogOpen(false)}
+                        >
+                            Tutup
+                        </Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
         </AppLayout>

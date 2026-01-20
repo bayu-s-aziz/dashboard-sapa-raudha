@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, GraduationCap, LayoutGrid, Megaphone, School, Users, UserCheck } from 'lucide-react';
+import { BookOpen, Folder, GraduationCap, LayoutGrid, Megaphone, School, Users, UserCheck, List, BarChart3 } from 'lucide-react';
 
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -13,8 +13,8 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
-import { index as usersIndex } from '@/routes/users';
+// import { dashboard } from '@/routes';
+// import { index as usersIndex, teachers, parents } from '@/routes/users';
 import { type NavItem } from '@/types';
 
 import AppLogo from './app-logo';
@@ -22,13 +22,24 @@ import AppLogo from './app-logo';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard(),
+        href: '/dashboard',
         icon: LayoutGrid,
     },
     {
         title: 'Manajemen Pengguna',
-        href: usersIndex(),
         icon: Users,
+        items: [
+            {
+                title: 'Guru',
+                href: '/users/teachers',
+                icon: UserCheck,
+            },
+            {
+                title: 'Orang Tua',
+                href: '/users/parents',
+                icon: Users,
+            },
+        ],
     },
     {
         title: 'Manajemen Siswa',
@@ -47,8 +58,19 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Manajemen Kehadiran',
-        href: '/attendance',
         icon: UserCheck,
+        items: [
+            {
+                title: 'Detail Presensi',
+                href: '/attendance',
+                icon: List,
+            },
+            {
+                title: 'Laporan Kehadiran',
+                href: '/attendance/reports',
+                icon: BarChart3,
+            },
+        ],
     },
 ];
 
@@ -72,7 +94,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
+                            <Link href="/dashboard" prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>

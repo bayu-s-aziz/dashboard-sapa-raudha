@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { ArrowLeft, Calendar, Save, Users } from 'lucide-react';
-import { type FormEvent, useEffect, useState } from 'react';
+import { type FormEvent, useEffect } from 'react';
 
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
@@ -64,7 +64,7 @@ export default function DailyClassAttendance({ class: classData, date, existingA
         { title: 'Presensi Harian', href: '#' },
     ];
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, processing } = useForm({
         date: date,
         scanned_by: '',
         records: classData.students.map(student => ({
@@ -126,23 +126,6 @@ export default function DailyClassAttendance({ class: classData, date, existingA
                 ? { ...record, [field]: value }
                 : record
         ));
-    };
-
-    const getStatusBadge = (status: string) => {
-        const variants = {
-            hadir: 'default',
-            sakit: 'destructive',
-            izin: 'secondary',
-            alpa: 'outline',
-        } as const;
-
-        return (
-            <Badge variant={variants[status as keyof typeof variants]}>
-                {status === 'hadir' ? 'Hadir' :
-                 status === 'sakit' ? 'Sakit' :
-                 status === 'izin' ? 'Izin' : 'Alpa'}
-            </Badge>
-        );
     };
 
     const formatDate = (date: string) => {
@@ -246,7 +229,7 @@ export default function DailyClassAttendance({ class: classData, date, existingA
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
-                                {classData.students.map((student, index) => {
+                                {classData.students.map((student) => {
                                     const record = data.records.find(r => r.student_id === student.id)!;
                                     const isExisting = existingAttendance[student.id];
 

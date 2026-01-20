@@ -2,7 +2,7 @@ import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
 
 import AppLogoIcon from '@/components/app-logo-icon';
-import { home } from '@/routes';
+import { dashboard } from '@/routes';
 
 interface AuthLayoutProps {
     name?: string;
@@ -21,12 +21,20 @@ export default function AuthSimpleLayout({
                 <div className="flex flex-col gap-8">
                     <div className="flex flex-col items-center gap-4">
                         <Link
-                            href={home()}
+                            href={dashboard.url()}
                             className="flex flex-col items-center gap-2 font-medium"
                         >
-                            <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md">
-                                <AppLogoIcon className="size-9 fill-current text-[var(--foreground)] dark:text-white" />
+                            <div className="mb-1 flex h-16 w-16 items-center justify-center rounded-md">
+                                <AppLogoIcon className="size-16 fill-current text-[var(--foreground)] dark:text-white" />
                             </div>
+                            <div className="text-center">
+                                <h2 className="text-lg font-bold text-[#4b986c] dark:text-[#4b986c]">
+                                    SAPA Raudha
+                                </h2>
+                                <h2 className="text-lg font-bold text-[#4b986c] dark:text-[#4b986c]">
+                                    Raudhatul Athfal Al-Islam
+                                </h2>
+                                                           </div>
                             <span className="sr-only">{title}</span>
                         </Link>
 
