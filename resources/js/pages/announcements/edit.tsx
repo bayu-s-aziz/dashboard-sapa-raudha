@@ -300,7 +300,7 @@ export default function AnnouncementEdit({ announcement, gurus, classes }: Props
                                             <SelectValue placeholder="Pilih target audiens" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="all">
+                                            <SelectItem key="all-audience" value="all">
                                                 Semua (Siswa, Orang Tua, Guru)
                                             </SelectItem>
                                             <SelectItem value="parents">

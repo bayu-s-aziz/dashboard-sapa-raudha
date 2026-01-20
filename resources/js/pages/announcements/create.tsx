@@ -249,7 +249,7 @@ export default function AnnouncementCreate({ gurus, classes }: Props) {
                                             <SelectValue placeholder="Pilih target audiens" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="all">
+                                            <SelectItem key="all-audience-create" value="all">
                                                 Semua (Siswa, Orang Tua, Guru)
                                             </SelectItem>
                                             <SelectItem value="parents">

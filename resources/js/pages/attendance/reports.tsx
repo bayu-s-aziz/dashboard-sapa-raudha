@@ -373,7 +373,7 @@ export default function AttendanceReports({ attendance_summary = [], classes, fi
                                         <SelectValue placeholder="Pilih kelas" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">Semua Kelas</SelectItem>
+                                        <SelectItem key="all-classes" value="all">Semua Kelas</SelectItem>
                                         {classes.map((cls) => (
                                             <SelectItem key={cls.id} value={cls.id.toString()}>
                                                 {cls.name} ({cls.grade} {cls.group})
@@ -479,9 +479,9 @@ export default function AttendanceReports({ attendance_summary = [], classes, fi
                                                     <SelectValue placeholder="Pilih kelas" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="all">Semua Kelas</SelectItem>
+                                                    <SelectItem key="all-classes-export" value="all">Semua Kelas</SelectItem>
                                                     {classes.map((cls) => (
-                                                        <SelectItem key={cls.id} value={cls.id.toString()}>
+                                                        <SelectItem key={`export-${cls.id}`} value={cls.id.toString()}>
                                                             {cls.name} ({cls.grade} {cls.group})
                                                         </SelectItem>
                                                     ))}

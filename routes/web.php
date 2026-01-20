@@ -6,6 +6,8 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AcademicYearController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AttendanceController;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 

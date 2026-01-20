@@ -242,7 +242,7 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                                                 <SelectValue placeholder="Pilih siswa" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="all">Semua Siswa</SelectItem>
+                                                <SelectItem key="all-students" value="all">Semua Siswa</SelectItem>
                                                 {students.map((student) => (
                                                     <SelectItem key={student.id} value={student.id.toString()}>
                                                         {student.name} ({student.nis})
@@ -262,7 +262,7 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                                                 <SelectValue placeholder="Pilih status" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="all">Semua Status</SelectItem>
+                                                <SelectItem key="all-statuses" value="all">Semua Status</SelectItem>
                                                 {statuses.map((status) => (
                                                     <SelectItem key={status} value={status}>
                                                         {status === 'hadir' ? 'Hadir' :

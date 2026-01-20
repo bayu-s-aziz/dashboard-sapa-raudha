@@ -236,7 +236,7 @@ export default function UsersIndex({ users, filters }: Props) {
                                     <SelectValue placeholder="Filter Tipe" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">
+                                    <SelectItem key="all-user-types" value="all">
                                         Semua Tipe
                                     </SelectItem>
                                     <SelectItem value="admin">Admin</SelectItem>

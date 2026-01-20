@@ -47,8 +47,12 @@ class AnnouncementController extends Controller
             return response()->json($announcements);
         }
 
-        // Get unique audiences for filter
-        $audiences = Pengumuman::select('target_audience')->distinct()->orderBy('target_audience')->pluck('target_audience');
+        // Get unique audiences for filter (exclude 'all' since it's handled separately)
+        $audiences = Pengumuman::select('target_audience')
+            ->distinct()
+            ->where('target_audience', '!=', 'all')
+            ->orderBy('target_audience')
+            ->pluck('target_audience');
 
         // Get classes for filter
         $classes = Kelas::select('id', 'name', 'group')->orderBy('group')->get();

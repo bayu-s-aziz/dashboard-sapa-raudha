@@ -259,7 +259,7 @@ export default function ClassesIndex({ classes, groups, academic_years, all_acad
                                         <SelectValue placeholder="Semua Kelompok" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">
+                                        <SelectItem key="all-groups" value="all">
                                             Semua Kelompok
                                         </SelectItem>
                                         {groups.map((group) => (
@@ -277,7 +277,7 @@ export default function ClassesIndex({ classes, groups, academic_years, all_acad
                                         <SelectValue placeholder="Semua Tahun Ajaran" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">
+                                        <SelectItem key="all-academic-years" value="all">
                                             Semua Tahun Ajaran
                                         </SelectItem>
                                         {academic_years.map((year) => (

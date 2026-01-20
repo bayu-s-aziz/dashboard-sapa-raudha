@@ -189,7 +189,7 @@ export default function StudentsIndex({ students, classes, filters }: Props) {
                                         <SelectValue placeholder="Semua Kelas" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">
+                                        <SelectItem key="all-classes-students" value="all">
                                             Semua Kelas
                                         </SelectItem>
                                         {classes.map((kelas) => (
@@ -210,7 +210,7 @@ export default function StudentsIndex({ students, classes, filters }: Props) {
                                         <SelectValue placeholder="Semua Jenis Kelamin" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">
+                                        <SelectItem key="all-genders" value="all">
                                             Semua Jenis Kelamin
                                         </SelectItem>
                                         <SelectItem value="L">

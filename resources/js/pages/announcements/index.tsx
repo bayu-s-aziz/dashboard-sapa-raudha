@@ -230,7 +230,7 @@ export default function AnnouncementsIndex({ announcements, audiences, classes, 
                                         <SelectValue placeholder="Semua Audiens" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">
+                                        <SelectItem key="all-audiences" value="all">
                                             Semua Audiens
                                         </SelectItem>
                                         {audiences.map((audience) => (
@@ -248,7 +248,7 @@ export default function AnnouncementsIndex({ announcements, audiences, classes, 
                                         <SelectValue placeholder="Semua Kelas" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">
+                                        <SelectItem key="all-classes-announcements" value="all">
                                             Semua Kelas
                                         </SelectItem>
                                         {classes.map((kelas) => (
