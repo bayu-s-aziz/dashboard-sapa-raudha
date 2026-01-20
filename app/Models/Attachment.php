@@ -11,12 +11,18 @@ class Attachment extends Model
 
     protected $table = 'attachments';
 
+    public $timestamps = false;
+
+    const CREATED_AT = 'uploaded_at';
+    const UPDATED_AT = null;
+
     protected $fillable = [
         'announcement_id',
         'filename',
         'file_path',
         'file_type',
         'file_size',
+        'uploaded_at',
     ];
 
     protected $casts = [

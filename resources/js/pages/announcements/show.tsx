@@ -1,11 +1,12 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowLeft, Download, Edit, FileText, User } from 'lucide-react';
-import { useEffect } from 'react';
+import { ArrowLeft, Download, Edit, Eye, FileText, User, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/hooks/use-toast';
 import AppLayout from '@/layouts/app-layout';
@@ -111,6 +112,67 @@ export default function AnnouncementShow({ announcement }: Props) {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
+    // Preview functionality
+    const [previewAttachment, setPreviewAttachment] = useState<Attachment | null>(null);
+    const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+
+    const canPreviewFile = (fileType: string) => {
+        const imageTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        const documentTypes = ['pdf'];
+        return imageTypes.includes(fileType.toLowerCase()) || documentTypes.includes(fileType.toLowerCase());
+    };
+
+    const openPreview = (attachment: Attachment) => {
+        setPreviewAttachment(attachment);
+        setPreviewDialogOpen(true);
+    };
+
+    const closePreview = () => {
+        setPreviewAttachment(null);
+        setPreviewDialogOpen(false);
+    };
+
+    const renderPreviewContent = () => {
+        if (!previewAttachment) return null;
+
+        const fileUrl = `/storage/${previewAttachment.file_path}`;
+        const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(previewAttachment.file_type.toLowerCase());
+        const isPdf = previewAttachment.file_type.toLowerCase() === 'pdf';
+
+        if (isImage) {
+            return (
+                <div className="flex justify-center">
+                    <img
+                        src={fileUrl}
+                        alt={previewAttachment.filename}
+                        className="max-w-full max-h-[70vh] object-contain"
+                    />
+                </div>
+            );
+        }
+
+        if (isPdf) {
+            return (
+                <div className="w-full h-[70vh]">
+                    <iframe
+                        src={fileUrl}
+                        className="w-full h-full border-0"
+                        title={`Preview ${previewAttachment.filename}`}
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+                <FileText className="h-16 w-16 text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">
+                    File ini tidak dapat dipreview. Silakan download untuk melihat.
+                </p>
+            </div>
+        );
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Detail Pengumuman - ${announcement.title}`} />
@@ -175,15 +237,26 @@ export default function AnnouncementShow({ announcement }: Props) {
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <Button variant="outline" size="sm" asChild>
-                                                    <a
-                                                        href={`/storage/${attachment.file_path}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        <Download className="h-4 w-4" />
-                                                    </a>
-                                                </Button>
+                                                <div className="flex items-center gap-2">
+                                                    {canPreviewFile(attachment.file_type) && (
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => openPreview(attachment)}
+                                                        >
+                                                            <Eye className="h-4 w-4" />
+                                                        </Button>
+                                                    )}
+                                                    <Button variant="outline" size="sm" asChild>
+                                                        <a
+                                                            href={`/storage/${attachment.file_path}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                        >
+                                                            <Download className="h-4 w-4" />
+                                                        </a>
+                                                    </Button>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -277,6 +350,20 @@ export default function AnnouncementShow({ announcement }: Props) {
                     </div>
                 </div>
             </div>
+
+            {/* Preview Dialog */}
+            <Dialog open={previewDialogOpen} onOpenChange={setPreviewDialogOpen}>
+                <DialogContent className="max-w-4xl">
+                    <DialogHeader>
+                        <DialogTitle>
+                            {previewAttachment?.filename}
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="mt-4">
+                        {renderPreviewContent()}
+                    </div>
+                </DialogContent>
+            </Dialog>
         </AppLayout>
     );
 }

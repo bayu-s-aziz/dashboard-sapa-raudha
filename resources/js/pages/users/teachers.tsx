@@ -186,7 +186,7 @@ export default function TeachersIndex({ users, filters }: Props) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Manajemen Guru & Admin" />
+            <Head title="Manajemen Guru" />
 
             <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">

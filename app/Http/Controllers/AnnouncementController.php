@@ -122,9 +122,17 @@ class AnnouncementController extends Controller
             ]);
 
             // Handle file uploads
-            if ($request->hasFile('attachments')) {
-                foreach ($request->file('attachments') as $file) {
-                    $this->storeAttachment($announcement, $file);
+            $attachmentFiles = $request->file('attachments', []);
+            if (!empty($attachmentFiles)) {
+                foreach ($attachmentFiles as $file) {
+                    if ($file && $file->isValid()) {
+                        try {
+                            $this->storeAttachment($announcement, $file);
+                        } catch (\Exception $e) {
+                            // Log the error but continue processing other files
+                            \Log::error('Failed to store attachment for announcement ' . $announcement->id . ': ' . $e->getMessage());
+                        }
+                    }
                 }
             }
 
@@ -393,6 +401,8 @@ class AnnouncementController extends Controller
             'content' => 'sometimes|string',
             'target_audience' => 'sometimes|in:all,parents,teachers,class',
             'target_class_id' => 'nullable|exists:classes,id',
+            'attachments' => 'nullable|array',
+            'attachments.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png,gif|max:10240',
         ]);
 
         if ($validator->fails()) {
@@ -421,9 +431,17 @@ class AnnouncementController extends Controller
             ]);
 
             // Handle file uploads
-            if ($request->hasFile('attachments')) {
-                foreach ($request->file('attachments') as $file) {
-                    $this->storeAttachment($pengumuman, $file);
+            $attachmentFiles = $request->file('attachments', []);
+            if (!empty($attachmentFiles)) {
+                foreach ($attachmentFiles as $file) {
+                    if ($file && $file->isValid()) {
+                        try {
+                            $this->storeAttachment($pengumuman, $file);
+                        } catch (\Exception $e) {
+                            // Log the error but continue processing other files
+                            \Log::error('Failed to store attachment for announcement ' . $pengumuman->id . ': ' . $e->getMessage());
+                        }
+                    }
                 }
             }
 
@@ -487,19 +505,30 @@ class AnnouncementController extends Controller
      */
     private function storeAttachment($announcement, $file)
     {
-        $filename = time() . '-' . $file->getClientOriginalName();
-        $path = $file->storeAs('announcements/' . $announcement->id, $filename, 'public');
+        try {
+            $filename = time() . '-' . $file->getClientOriginalName();
+            $path = $file->storeAs('announcements/' . $announcement->id, $filename, 'public');
 
-        $fileType = str_replace('.', '', $file->getClientOriginalExtension());
+            $fileType = $file->getClientOriginalExtension() ?? 'unknown';
 
-        $attachment = Attachment::create([
-            'announcement_id' => $announcement->id,
-            'filename' => $file->getClientOriginalName(),
-            'file_path' => $path,
-            'file_type' => $fileType,
-            'file_size' => $file->getSize(),
-        ]);
+            $attachment = Attachment::create([
+                'announcement_id' => $announcement->id,
+                'filename' => $file->getClientOriginalName(),
+                'file_path' => $path,
+                'file_type' => $fileType,
+                'file_size' => $file->getSize(),
+                'uploaded_at' => now(),
+            ]);
 
-        return $attachment;
+            return $attachment;
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Failed to store attachment: ' . $e->getMessage(), [
+                'announcement_id' => $announcement->id,
+                'filename' => $file->getClientOriginalName(),
+                'file_size' => $file->getSize(),
+            ]);
+            throw $e;
+        }
     }
 }

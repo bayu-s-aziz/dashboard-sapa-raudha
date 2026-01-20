@@ -207,6 +207,12 @@ export default function AnnouncementsIndex({ announcements, audiences, classes, 
 
                 <Card>
                     <CardHeader>
+                        <div>
+                            <h3 className="text-lg font-medium">Daftar Pengumuman</h3>
+                            <p className="text-sm text-muted-foreground">
+                                Cari dan kelola data pengumuman
+                            </p>
+                        </div>
                         <form onSubmit={handleSearch} className="space-y-4">
                             <div className="flex flex-col gap-4 md:flex-row">
                                 <div className="flex-1">

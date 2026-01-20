@@ -142,7 +142,7 @@ export default function Welcome({
                                     className="w-24 h-24 lg:w-32 lg:h-32 object-contain"
                                 />
                                 <div className="text-center">
-                                    <h2 className="text-2xl lg:text-4xl font-bold text-[#4b986c] dark:text-[#4b986c] mb-2">
+                                    <h2 className="text-2xl lg:text-3xl font-bold text-[#4b986c] dark:text-[#4b986c] mb-2">
                                         Raudhatul Athfal Al-Islam
                                     </h2>
                                     <h3 className="text-lg lg:text-xl font-semibold text-[#0b191e] dark:text-[#ffffff] mb-1">
