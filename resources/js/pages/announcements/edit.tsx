@@ -81,7 +81,7 @@ export default function AnnouncementEdit({ announcement, gurus, classes }: Props
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {
@@ -103,7 +103,7 @@ export default function AnnouncementEdit({ announcement, gurus, classes }: Props
             toast({
                 title: 'Berhasil',
                 description: 'Lampiran berhasil dihapus',
-                variant: 'default',
+                variant: 'success',
             });
             // Reload the page to update the attachments list
             window.location.reload();
@@ -139,7 +139,7 @@ export default function AnnouncementEdit({ announcement, gurus, classes }: Props
                 toast({
                     title: 'Berhasil',
                     description: 'Pengumuman berhasil diperbarui',
-                    variant: 'default',
+                    variant: 'success',
                 });
             },
             onError: () => {

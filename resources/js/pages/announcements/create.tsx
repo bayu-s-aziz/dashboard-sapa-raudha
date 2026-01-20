@@ -61,7 +61,7 @@ export default function AnnouncementCreate({ gurus, classes }: Props) {
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {
@@ -96,7 +96,7 @@ export default function AnnouncementCreate({ gurus, classes }: Props) {
                 toast({
                     title: 'Berhasil',
                     description: 'Pengumuman berhasil dibuat',
-                    variant: 'default',
+                    variant: 'success',
                 });
             },
             onError: () => {

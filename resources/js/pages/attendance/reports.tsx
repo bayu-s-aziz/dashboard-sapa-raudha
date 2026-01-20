@@ -105,7 +105,7 @@ export default function AttendanceReports({ attendance_summary = [], classes, fi
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {
@@ -324,7 +324,7 @@ export default function AttendanceReports({ attendance_summary = [], classes, fi
         toast({
             title: 'Berhasil',
             description: 'PDF berhasil diekspor',
-            variant: 'default',
+            variant: 'success',
         });
         } catch (error) {
             console.error('PDF export error:', error);

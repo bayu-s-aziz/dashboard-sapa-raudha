@@ -108,7 +108,7 @@ export default function ClassesIndex({ classes, groups, academic_years, all_acad
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {

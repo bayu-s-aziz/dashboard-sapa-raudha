@@ -82,7 +82,7 @@ export default function DailyClassAttendance({ class: classData, date, existingA
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {
@@ -107,7 +107,7 @@ export default function DailyClassAttendance({ class: classData, date, existingA
                 toast({
                     title: 'Berhasil',
                     description: 'Presensi berhasil disimpan',
-                    variant: 'default',
+                    variant: 'success',
                 });
             },
             onError: () => {

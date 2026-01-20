@@ -55,7 +55,7 @@ export default function AnnouncementShow({ announcement }: Props) {
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {

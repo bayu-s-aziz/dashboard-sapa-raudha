@@ -51,7 +51,7 @@ export default function ClassShow({ class: kelas }: Props) {
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {

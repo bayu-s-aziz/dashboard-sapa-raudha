@@ -98,7 +98,7 @@ export default function AnnouncementsIndex({ announcements, audiences, classes, 
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {
@@ -141,7 +141,7 @@ export default function AnnouncementsIndex({ announcements, audiences, classes, 
                     toast({
                         title: 'Berhasil',
                         description: 'Pengumuman berhasil dihapus',
-                        variant: 'default',
+                        variant: 'success',
                     });
                     setDeleteDialogOpen(false);
                     setAnnouncementToDelete(null);

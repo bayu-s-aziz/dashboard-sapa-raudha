@@ -99,7 +99,7 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {
@@ -140,7 +140,7 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                     toast({
                         title: 'Berhasil',
                         description: 'Presensi berhasil dihapus',
-                        variant: 'default',
+                        variant: 'success',
                     });
                 },
                 onError: () => {

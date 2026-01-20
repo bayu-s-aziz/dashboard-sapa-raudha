@@ -60,7 +60,7 @@ export default function AttendanceCreate({ students, gurus }: Props) {
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {
@@ -80,7 +80,7 @@ export default function AttendanceCreate({ students, gurus }: Props) {
                 toast({
                     title: 'Berhasil',
                     description: 'Presensi berhasil dibuat',
-                    variant: 'default',
+                    variant: 'success',
                 });
             },
             onError: () => {

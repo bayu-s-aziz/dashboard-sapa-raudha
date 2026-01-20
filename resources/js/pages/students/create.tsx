@@ -66,7 +66,7 @@ export default function StudentCreate({ classes }: Props) {
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {
@@ -86,7 +86,7 @@ export default function StudentCreate({ classes }: Props) {
                 toast({
                     title: 'Berhasil',
                     description: 'Siswa berhasil ditambahkan',
-                    variant: 'default',
+                    variant: 'success',
                 });
             },
             onError: () => {

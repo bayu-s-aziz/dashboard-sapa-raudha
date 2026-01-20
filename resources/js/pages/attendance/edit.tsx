@@ -71,7 +71,7 @@ export default function AttendanceEdit({ attendance, gurus }: Props) {
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {
@@ -91,7 +91,7 @@ export default function AttendanceEdit({ attendance, gurus }: Props) {
                 toast({
                     title: 'Berhasil',
                     description: 'Presensi berhasil diperbarui',
-                    variant: 'default',
+                    variant: 'success',
                 });
             },
             onError: () => {

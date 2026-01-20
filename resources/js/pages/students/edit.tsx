@@ -76,7 +76,7 @@ export default function StudentEdit({ student, classes }: Props) {
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {
@@ -96,7 +96,7 @@ export default function StudentEdit({ student, classes }: Props) {
                 toast({
                     title: 'Berhasil',
                     description: 'Data siswa berhasil diperbarui',
-                    variant: 'default',
+                    variant: 'success',
                 });
             },
             onError: () => {
@@ -131,7 +131,7 @@ export default function StudentEdit({ student, classes }: Props) {
                 toast({
                     title: 'Berhasil',
                     description: 'Foto berhasil diupload',
-                    variant: 'default',
+                    variant: 'success',
                 });
                 // Reload page to show updated photo
                 window.location.reload();

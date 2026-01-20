@@ -58,7 +58,7 @@ export default function ClassEdit({ class: kelas, gurus }: Props) {
             toast({
                 title: 'Berhasil',
                 description: flash.success,
-                variant: 'default',
+                variant: 'success',
             });
         }
         if (flash?.error) {
@@ -78,7 +78,7 @@ export default function ClassEdit({ class: kelas, gurus }: Props) {
                 toast({
                     title: 'Berhasil',
                     description: 'Data kelas berhasil diperbarui',
-                    variant: 'default',
+                    variant: 'success',
                 });
             },
             onError: () => {

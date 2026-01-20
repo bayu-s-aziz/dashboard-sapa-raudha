@@ -102,7 +102,7 @@ export default function UsersEdit({ user }: Props) {
                 toast({
                     title: 'Berhasil',
                     description: 'Foto berhasil diupload',
-                    variant: 'default',
+                    variant: 'success',
                 });
                 // Reload page to show updated photo
                 window.location.reload();
