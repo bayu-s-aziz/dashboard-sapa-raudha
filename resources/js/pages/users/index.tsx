@@ -49,6 +49,7 @@ import { toast } from '@/hooks/use-toast';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
+import { useDebounce } from '@/hooks/use-debounce';
 
 interface User {
     id: number;
@@ -99,6 +100,10 @@ export default function UsersIndex({ users, filters }: Props) {
     const [userToDelete, setUserToDelete] = useState<User | null>(null);
     const { props } = usePage();
 
+    // Debounced search values
+    const debouncedSearch = useDebounce(search, 300);
+    const debouncedType = useDebounce(type, 300);
+
     // Show toast for flash messages
     useEffect(() => {
         const flash = props.flash as { success?: string; error?: string };
@@ -118,25 +123,20 @@ export default function UsersIndex({ users, filters }: Props) {
         }
     }, [props.flash]);
 
-    const handleSearch = (e: FormEvent) => {
-        e.preventDefault();
-        router.get(
-            '/users',
-            { search, type: type !== 'all' ? type : undefined },
-            { preserveState: true },
-        );
-    };
-
-    const handleTypeChange = (value: string) => {
-        setType(value);
+    // Real-time search effect
+    useEffect(() => {
         router.get(
             '/users',
             {
-                search: search || undefined,
-                type: value !== 'all' ? value : undefined,
+                search: debouncedSearch || undefined,
+                type: debouncedType !== 'all' ? debouncedType : undefined,
             },
-            { preserveState: true },
+            { preserveState: true, preserveScroll: true },
         );
+    }, [debouncedSearch, debouncedType]);
+
+    const handleTypeChange = (value: string) => {
+        setType(value);
     };
 
     const getUserType = (user: User) => {
@@ -213,10 +213,7 @@ export default function UsersIndex({ users, filters }: Props) {
                             </p>
                         </div>
                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                            <form
-                                onSubmit={handleSearch}
-                                className="flex flex-1 gap-2"
-                            >
+                            <div className="flex flex-1 gap-2">
                                 <div className="relative flex-1 max-w-sm">
                                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                     <Input
@@ -228,8 +225,7 @@ export default function UsersIndex({ users, filters }: Props) {
                                         className="pl-9"
                                     />
                                 </div>
-                                <Button type="submit">Cari</Button>
-                            </form>
+                            </div>
 
                             <Select value={type} onValueChange={handleTypeChange}>
                                 <SelectTrigger className="w-45">

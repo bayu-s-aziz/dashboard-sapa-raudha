@@ -49,6 +49,7 @@ import { toast } from '@/hooks/use-toast';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
+import { useDebounce } from '@/hooks/use-debounce';
 
 interface User {
     id: number;
@@ -103,6 +104,9 @@ export default function TeachersIndex({ users, filters }: Props) {
     const [userToDelete, setUserToDelete] = useState<User | null>(null);
     const { props } = usePage();
 
+    // Debounced search value
+    const debouncedSearch = useDebounce(search, 300);
+
     // Show toast for flash messages
     useEffect(() => {
         const flash = props.flash as { success?: string; error?: string };
@@ -122,14 +126,14 @@ export default function TeachersIndex({ users, filters }: Props) {
         }
     }, [props.flash]);
 
-    const handleSearch = (e: FormEvent) => {
-        e.preventDefault();
+    // Real-time search effect
+    useEffect(() => {
         router.get(
             '/users/teachers',
-            { search },
-            { preserveState: true },
+            { search: debouncedSearch || undefined },
+            { preserveState: true, preserveScroll: true },
         );
-    };
+    }, [debouncedSearch]);
 
     const getUserType = (user: User) => {
         if (user.userable_type === 'App\\Models\\Guru') {
@@ -205,10 +209,7 @@ export default function TeachersIndex({ users, filters }: Props) {
                             </p>
                         </div>
                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                            <form
-                                onSubmit={handleSearch}
-                                className="flex flex-1 gap-2"
-                            >
+                            <div className="flex flex-1 gap-2">
                                 <div className="relative flex-1 max-w-sm">
                                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                     <Input
@@ -220,8 +221,7 @@ export default function TeachersIndex({ users, filters }: Props) {
                                         className="pl-9"
                                     />
                                 </div>
-                                <Button type="submit">Cari</Button>
-                            </form>
+                            </div>
                         </div>
                     </CardHeader>
 

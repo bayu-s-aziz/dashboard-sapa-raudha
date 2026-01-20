@@ -33,6 +33,7 @@ import {
 import { toast } from '@/hooks/use-toast';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
+import { useDebounce } from '@/hooks/use-debounce';
 
 interface Student {
     id: number;
@@ -93,6 +94,9 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
         end_date: filters.end_date || '',
     });
 
+    // Debounced filter values
+    const debouncedFilters = useDebounce(searchFilters, 300);
+
     useEffect(() => {
         const flash = page.props.flash || {};
         if (flash?.success) {
@@ -111,19 +115,20 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
         }
     }, [page.props.flash]);
 
-    const handleFilterChange = (key: string, value: string) => {
-        setSearchFilters(prev => ({ ...prev, [key]: value }));
-    };
-
-    const handleSearch = (e: FormEvent) => {
-        e.preventDefault();
-        const filtersToSend = { ...searchFilters };
+    // Real-time search effect
+    useEffect(() => {
+        const filtersToSend = { ...debouncedFilters };
         if (filtersToSend.student_id === 'all') filtersToSend.student_id = '';
         if (filtersToSend.status === 'all') filtersToSend.status = '';
         router.get('/attendance', filtersToSend, {
             preserveState: true,
+            preserveScroll: true,
             replace: true,
         });
+    }, [debouncedFilters]);
+
+    const handleFilterChange = (key: string, value: string) => {
+        setSearchFilters(prev => ({ ...prev, [key]: value }));
     };
 
     const handleDelete = (attendance: Attendance) => {
@@ -231,7 +236,7 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                                 <CardTitle>Filter Data Detail</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <form onSubmit={handleSearch} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium">Siswa</label>
                                         <Select
@@ -293,10 +298,6 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                                     </div>
 
                                     <div className="flex gap-2 md:col-span-2 lg:col-span-4">
-                                        <Button type="submit">
-                                            <Search className="mr-2 h-4 w-4" />
-                                            Cari
-                                        </Button>
                                         <Button
                                             type="button"
                                             variant="outline"
@@ -313,7 +314,7 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                                             Reset
                                         </Button>
                                     </div>
-                                </form>
+                                </div>
                             </CardContent>
                         </Card>
 

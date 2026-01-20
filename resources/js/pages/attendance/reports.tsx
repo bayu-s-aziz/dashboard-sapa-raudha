@@ -37,6 +37,7 @@ import {
 import { toast } from '@/hooks/use-toast';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
+import { useDebounce } from '@/hooks/use-debounce';
 
 interface Student {
     id: number;
@@ -92,6 +93,9 @@ export default function AttendanceReports({ attendance_summary = [], classes, fi
         class_id: filters.class_id || 'all',
     });
 
+    // Debounced filter values
+    const debouncedFilters = useDebounce(searchFilters, 300);
+
     const [exportDialogOpen, setExportDialogOpen] = useState(false);
     const [exportFilters, setExportFilters] = useState({
         period_type: 'weekly' as 'weekly' | 'monthly',
@@ -117,17 +121,18 @@ export default function AttendanceReports({ attendance_summary = [], classes, fi
         }
     }, [page.props.flash]);
 
-    const handleFilterChange = (key: string, value: string) => {
-        setSearchFilters(prev => ({ ...prev, [key]: value }));
-    };
-
-    const handleSearch = (e: FormEvent) => {
-        e.preventDefault();
-        const filtersToSend = { ...searchFilters };
+    // Real-time search effect
+    useEffect(() => {
+        const filtersToSend = { ...debouncedFilters };
         router.get('/attendance/reports', filtersToSend, {
             preserveState: true,
+            preserveScroll: true,
             replace: true,
         });
+    }, [debouncedFilters]);
+
+    const handleFilterChange = (key: string, value: string) => {
+        setSearchFilters(prev => ({ ...prev, [key]: value }));
     };
 
     const formatPeriod = (period: string, periodType: 'weekly' | 'monthly') => {
@@ -362,7 +367,7 @@ export default function AttendanceReports({ attendance_summary = [], classes, fi
                         <CardTitle>Filter Laporan Periode</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleSearch} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Kelas</label>
                                 <Select
@@ -413,10 +418,6 @@ export default function AttendanceReports({ attendance_summary = [], classes, fi
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">&nbsp;</label>
                                 <div className="flex gap-2">
-                                    <Button type="submit" className="flex-1">
-                                        <Search className="mr-2 h-4 w-4" />
-                                        Tampilkan
-                                    </Button>
                                     <Button
                                         type="button"
                                         variant="outline"
@@ -433,7 +434,7 @@ export default function AttendanceReports({ attendance_summary = [], classes, fi
                                     </Button>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </CardContent>
                 </Card>
 

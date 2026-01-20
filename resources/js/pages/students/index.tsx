@@ -1,6 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { Edit, Eye, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 
 import Heading from '@/components/heading';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -41,6 +41,7 @@ import {
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
+import { useDebounce } from '@/hooks/use-debounce';
 
 interface Kelas {
     id: number;
@@ -88,23 +89,28 @@ export default function StudentsIndex({ students, classes, filters }: Props) {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [studentToDelete, setStudentToDelete] = useState<Siswa | null>(null);
 
+    // Debounced search values
+    const debouncedSearch = useDebounce(search, 300);
+    const debouncedClassFilter = useDebounce(classFilter, 300);
+    const debouncedGenderFilter = useDebounce(genderFilter, 300);
+
+    // Real-time search effect
+    useEffect(() => {
+        router.get(
+            '/students',
+            {
+                search: debouncedSearch || undefined,
+                class: debouncedClassFilter !== 'all' ? debouncedClassFilter : undefined,
+                gender: debouncedGenderFilter !== 'all' ? debouncedGenderFilter : undefined,
+            },
+            { preserveState: true, preserveScroll: true },
+        );
+    }, [debouncedSearch, debouncedClassFilter, debouncedGenderFilter]);
+
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
         { title: 'Manajemen Siswa', href: '/students' },
     ];
-
-    const handleSearch = (e: FormEvent) => {
-        e.preventDefault();
-        router.get(
-            '/students',
-            {
-                search: search || undefined,
-                class: classFilter !== 'all' ? classFilter : undefined,
-                gender: genderFilter !== 'all' ? genderFilter : undefined,
-            },
-            { preserveState: true },
-        );
-    };
 
     const handleDelete = (student: Siswa) => {
         setStudentToDelete(student);
@@ -166,7 +172,7 @@ export default function StudentsIndex({ students, classes, filters }: Props) {
                                 Cari dan kelola data siswa
                             </p>
                         </div>
-                        <form onSubmit={handleSearch} className="space-y-4">
+                        <div className="space-y-4">
                             <div className="flex flex-col gap-4 md:flex-row">
                                 <div className="flex-1">
                                     <div className="relative">
@@ -221,9 +227,8 @@ export default function StudentsIndex({ students, classes, filters }: Props) {
                                         </SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <Button type="submit">Cari</Button>
                             </div>
-                        </form>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <Table>

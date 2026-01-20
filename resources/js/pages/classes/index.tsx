@@ -41,6 +41,7 @@ import {
 import { toast } from '@/hooks/use-toast';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
+import { useDebounce } from '@/hooks/use-debounce';
 
 interface Guru {
     id: number;
@@ -102,6 +103,11 @@ export default function ClassesIndex({ classes, groups, academic_years, all_acad
     const [setActiveDialogOpen, setSetActiveDialogOpen] = useState(false);
     const [academicYearsList, setAcademicYearsList] = useState<AcademicYear[]>([]);
 
+    // Debounced search values
+    const debouncedSearch = useDebounce(search, 300);
+    const debouncedGroupFilter = useDebounce(groupFilter, 300);
+    const debouncedAcademicYearFilter = useDebounce(academicYearFilter, 300);
+
     useEffect(() => {
         const flash = page.props.flash || {};
         if (flash?.success) {
@@ -125,23 +131,23 @@ export default function ClassesIndex({ classes, groups, academic_years, all_acad
         setAcademicYearsList(all_academic_years || []);
     }, [all_academic_years]);
 
+    // Real-time search effect
+    useEffect(() => {
+        router.get(
+            '/classes',
+            {
+                search: debouncedSearch || undefined,
+                group: debouncedGroupFilter !== 'all' ? debouncedGroupFilter : undefined,
+                academic_year: debouncedAcademicYearFilter !== 'all' ? debouncedAcademicYearFilter : undefined,
+            },
+            { preserveState: true, preserveScroll: true },
+        );
+    }, [debouncedSearch, debouncedGroupFilter, debouncedAcademicYearFilter]);
+
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
         { title: 'Manajemen Kelas', href: '/classes' },
     ];
-
-    const handleSearch = (e: FormEvent) => {
-        e.preventDefault();
-        router.get(
-            '/classes',
-            {
-                search: search || undefined,
-                group: groupFilter !== 'all' ? groupFilter : undefined,
-                academic_year: academicYearFilter !== 'all' ? academicYearFilter : undefined,
-            },
-            { preserveState: true },
-        );
-    };
 
     const handleDelete = (kelas: Kelas) => {
         setClassToDelete(kelas);
@@ -236,7 +242,7 @@ export default function ClassesIndex({ classes, groups, academic_years, all_acad
                                 )}
                             </div>
                         </div>
-                        <form onSubmit={handleSearch} className="space-y-4">
+                        <div className="space-y-4">
                             <div className="flex flex-col gap-4 md:flex-row">
                                 <div className="flex-1">
                                     <div className="relative">
@@ -287,9 +293,8 @@ export default function ClassesIndex({ classes, groups, academic_years, all_acad
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                <Button type="submit">Cari</Button>
                             </div>
-                        </form>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <Table>

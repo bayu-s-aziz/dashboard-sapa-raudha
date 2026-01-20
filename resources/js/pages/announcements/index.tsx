@@ -39,6 +39,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { toast } from '@/hooks/use-toast';
+import { useDebounce } from '@/hooks/use-debounce';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 
@@ -92,6 +93,11 @@ export default function AnnouncementsIndex({ announcements, audiences, classes, 
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [announcementToDelete, setAnnouncementToDelete] = useState<Announcement | null>(null);
 
+    // Debounced search values
+    const debouncedSearch = useDebounce(search, 300);
+    const debouncedAudienceFilter = useDebounce(audienceFilter, 300);
+    const debouncedClassFilter = useDebounce(classFilter, 300);
+
     useEffect(() => {
         const flash = page.props.flash || {};
         if (flash?.success) {
@@ -110,23 +116,23 @@ export default function AnnouncementsIndex({ announcements, audiences, classes, 
         }
     }, [page.props.flash]);
 
+    // Real-time search effect
+    useEffect(() => {
+        router.get(
+            '/announcements',
+            {
+                search: debouncedSearch || undefined,
+                audience: debouncedAudienceFilter !== 'all' ? debouncedAudienceFilter : undefined,
+                class_id: debouncedClassFilter !== 'all' ? debouncedClassFilter : undefined,
+            },
+            { preserveState: true, preserveScroll: true },
+        );
+    }, [debouncedSearch, debouncedAudienceFilter, debouncedClassFilter]);
+
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
         { title: 'Manajemen Pengumuman', href: '/announcements' },
     ];
-
-    const handleSearch = (e: FormEvent) => {
-        e.preventDefault();
-        router.get(
-            '/announcements',
-            {
-                search: search || undefined,
-                audience: audienceFilter !== 'all' ? audienceFilter : undefined,
-                class_id: classFilter !== 'all' ? classFilter : undefined,
-            },
-            { preserveState: true },
-        );
-    };
 
     const handleDelete = (announcement: Announcement) => {
         setAnnouncementToDelete(announcement);
@@ -213,7 +219,7 @@ export default function AnnouncementsIndex({ announcements, audiences, classes, 
                                 Cari dan kelola data pengumuman
                             </p>
                         </div>
-                        <form onSubmit={handleSearch} className="space-y-4">
+                        <div className="space-y-4">
                             <div className="flex flex-col gap-4 md:flex-row">
                                 <div className="flex-1">
                                     <div className="relative">
@@ -264,9 +270,8 @@ export default function AnnouncementsIndex({ announcements, audiences, classes, 
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                <Button type="submit">Cari</Button>
                             </div>
-                        </form>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <Table>
