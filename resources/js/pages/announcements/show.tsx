@@ -36,7 +36,7 @@ interface Announcement {
     content: string;
     author: Guru;
     target_audience: 'all' | 'parents' | 'teachers' | 'class';
-    target_class?: Kelas;
+    targetClass?: Kelas;
     attachments: Attachment[];
     created_at: string;
     updated_at: string;
@@ -208,7 +208,7 @@ export default function AnnouncementShow({ announcement }: Props) {
                                     </Badge>
                                 </div>
 
-                                {announcement.target_class && (
+                                {announcement.targetClass && (
                                     <>
                                         <Separator />
                                         <div>
@@ -216,7 +216,7 @@ export default function AnnouncementShow({ announcement }: Props) {
                                                 Target Kelas
                                             </div>
                                             <Badge variant="outline">
-                                                Kelompok {announcement.target_class.group}
+                                                Kelompok {announcement.targetClass.group}
                                             </Badge>
                                         </div>
                                     </>

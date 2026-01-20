@@ -59,7 +59,7 @@ interface Announcement {
     content: string;
     author: Guru;
     target_audience: 'all' | 'parents' | 'teachers' | 'class';
-    target_class?: Kelas;
+    targetClass?: Kelas;
     created_at: string;
     updated_at: string;
 }
@@ -135,7 +135,7 @@ export default function AnnouncementsIndex({ announcements, audiences, classes, 
 
     const confirmDelete = () => {
         if (announcementToDelete) {
-            router.delete(`/api/announcements/${announcementToDelete.id}`, {
+            router.delete(`/announcements/${announcementToDelete.id}`, {
                 preserveScroll: true,
                 onSuccess: () => {
                     toast({
@@ -300,9 +300,9 @@ export default function AnnouncementsIndex({ announcements, audiences, classes, 
                                                 </Badge>
                                             </TableCell>
                                             <TableCell>
-                                                {announcement.target_class ? (
+                                                {announcement.targetClass ? (
                                                     <Badge variant="outline">
-                                                        Kelompok {announcement.target_class.group}
+                                                        Kelompok {announcement.targetClass.group}
                                                     </Badge>
                                                 ) : (
                                                     '-'

@@ -66,6 +66,20 @@ class AnnouncementController extends Controller
     }
 
     /**
+     * Show the form for creating a new announcement
+     */
+    public function create()
+    {
+        $gurus = Guru::orderBy('name')->get();
+        $classes = Kelas::select('id', 'name', 'group')->orderBy('group')->get();
+
+        return Inertia::render('announcements/create', [
+            'gurus' => $gurus,
+            'classes' => $classes,
+        ]);
+    }
+
+    /**
      * Store a newly created announcement in storage
      */
     public function store(Request $request)
@@ -76,23 +90,36 @@ class AnnouncementController extends Controller
             'author_id' => 'required|exists:gurus,id',
             'target_audience' => 'required|in:all,parents,teachers,class',
             'target_class_id' => 'nullable|exists:classes,id',
+            'attachments' => 'nullable|array',
+            'attachments.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png,gif|max:10240',
         ]);
 
         if ($validator->fails()) {
+            if ($request->header('X-Inertia')) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
             return response()->json($validator->errors(), 422);
         }
 
         // Validate that if target_audience is 'class', target_class_id must be provided
         if ($request->target_audience === 'class' && empty($request->target_class_id)) {
+            if ($request->header('X-Inertia')) {
+                return redirect()->back()->withErrors(['target_class_id' => 'Target kelas harus dipilih jika audience adalah class'])->withInput();
+            }
             return response()->json([
                 'message' => 'Target kelas harus dipilih jika audience adalah class',
             ], 422);
         }
 
         try {
-            $announcement = Pengumuman::create($request->only([
-                'title', 'content', 'author_id', 'target_audience', 'target_class_id'
-            ]));
+            $announcement = Pengumuman::create([
+                'title' => $request->title,
+                'content' => $request->content,
+                'author_id' => $request->author_id,
+                'author_type' => 'guru',
+                'target_audience' => $request->target_audience,
+                'target_class_id' => $request->target_class_id,
+            ]);
 
             // Handle file uploads
             if ($request->hasFile('attachments')) {
@@ -103,11 +130,19 @@ class AnnouncementController extends Controller
 
             $announcement->load('author', 'targetClass', 'attachments');
 
+            if ($request->header('X-Inertia')) {
+                return redirect()->route('announcements.show', $announcement)->with('success', 'Pengumuman berhasil dibuat');
+            }
+
             return response()->json([
                 'message' => 'Pengumuman berhasil dibuat',
                 'data' => $announcement,
             ], 201);
         } catch (\Exception $e) {
+            if ($request->header('X-Inertia')) {
+                return redirect()->back()->with('error', 'Error membuat pengumuman: ' . $e->getMessage());
+            }
+
             return response()->json([
                 'message' => 'Error membuat pengumuman',
                 'error' => $e->getMessage(),
@@ -321,29 +356,11 @@ class AnnouncementController extends Controller
     }
 
     /**
-     * Show the form for creating a new announcement
-     */
-    public function create()
-    {
-        $gurus = Guru::orderBy('name')->get();
-        $classes = Kelas::select('id', 'name', 'group')->orderBy('group')->get();
-
-        return Inertia::render('announcements/create', [
-            'gurus' => $gurus,
-            'classes' => $classes,
-        ]);
-    }
-
-    /**
      * Display the specified announcement (Inertia version)
      */
     public function showInertia(Pengumuman $pengumuman)
     {
-        $pengumuman->load(['author', 'targetClass', 'attachments']);
-
-        if (request()->wantsJson()) {
-            return response()->json($pengumuman);
-        }
+        $pengumuman->load('author', 'targetClass', 'attachments');
 
         return Inertia::render('announcements/show', [
             'announcement' => $pengumuman,
