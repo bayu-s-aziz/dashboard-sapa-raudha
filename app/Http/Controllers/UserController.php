@@ -162,6 +162,11 @@ class UserController extends Controller
             abort(404, 'User tidak ditemukan');
         }
 
+        // Load student relationship for parents
+        if ($user->userable_type === 'App\\Models\\ParentModel') {
+            $user->load('userable.student');
+        }
+
         if (request()->wantsJson() || request()->is('api/*')) {
             return response()->json($user);
         }

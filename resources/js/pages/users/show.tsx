@@ -29,6 +29,12 @@ interface User {
         mother_phone?: string;
         guardian_phone?: string;
         photo_url?: string;
+        student?: {
+            id: number;
+            name: string;
+            nis: string;
+            nisn: string;
+        };
     };
     created_at: string;
 }
@@ -232,72 +238,36 @@ export default function UsersShow({ user }: Props) {
                                 'App\\Models\\ParentModel' && (
                                 <div className="mt-6 space-y-4 border-t pt-4">
                                     <h4 className="font-semibold">
-                                        Informasi Keluarga
+                                        Informasi Siswa
                                     </h4>
-                                    <div className="grid gap-4 md:grid-cols-2">
-                                        {user.userable?.father_name && (
-                                            <div className="space-y-2">
-                                                <div className="text-sm text-muted-foreground">
-                                                    Nama Ayah
-                                                </div>
-                                                <p className="font-medium">
-                                                    {user.userable.father_name}
-                                                </p>
-                                                {user.userable
-                                                    ?.father_phone && (
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {
-                                                            user.userable
-                                                                .father_phone
-                                                        }
-                                                    </p>
-                                                )}
+                                    {user.userable?.student && (
+                                        <div className="space-y-2">
+                                            <div className="text-sm text-muted-foreground">
+                                                Nama Siswa
                                             </div>
-                                        )}
-
-                                        {user.userable?.mother_name && (
-                                            <div className="space-y-2">
-                                                <div className="text-sm text-muted-foreground">
-                                                    Nama Ibu
-                                                </div>
-                                                <p className="font-medium">
-                                                    {user.userable.mother_name}
-                                                </p>
-                                                {user.userable
-                                                    ?.mother_phone && (
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {
-                                                            user.userable
-                                                                .mother_phone
-                                                        }
+                                            <p className="font-medium">
+                                                {user.userable.student.name}
+                                            </p>
+                                            <div className="grid gap-4 md:grid-cols-2 mt-4">
+                                                <div className="space-y-2">
+                                                    <div className="text-sm text-muted-foreground">
+                                                        NIS
+                                                    </div>
+                                                    <p className="font-medium">
+                                                        {user.userable.student.nis}
                                                     </p>
-                                                )}
-                                            </div>
-                                        )}
-
-                                        {user.userable?.guardian_name && (
-                                            <div className="space-y-2">
-                                                <div className="text-sm text-muted-foreground">
-                                                    Nama Wali
                                                 </div>
-                                                <p className="font-medium">
-                                                    {
-                                                        user.userable
-                                                            .guardian_name
-                                                    }
-                                                </p>
-                                                {user.userable
-                                                    ?.guardian_phone && (
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {
-                                                            user.userable
-                                                                .guardian_phone
-                                                        }
+                                                <div className="space-y-2">
+                                                    <div className="text-sm text-muted-foreground">
+                                                        NISN
+                                                    </div>
+                                                    <p className="font-medium">
+                                                        {user.userable.student.nisn}
                                                     </p>
-                                                )}
+                                                </div>
                                             </div>
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </CardContent>
