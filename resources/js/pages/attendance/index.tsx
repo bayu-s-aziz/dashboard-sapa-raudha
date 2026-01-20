@@ -1,6 +1,6 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { CalendarDays, Edit, Eye, Plus, Search, Trash2, UserCheck, BarChart3 } from 'lucide-react';
-import { useEffect, useState, type FormEvent } from 'react';
+import { CalendarDays, Edit, Eye, Plus, Trash2, UserCheck, BarChart3 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';

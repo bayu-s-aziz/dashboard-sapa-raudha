@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Guru;
+use App\Models\User;
 
 class GuruSeeder extends Seeder
 {
@@ -76,10 +79,25 @@ class GuruSeeder extends Seeder
         ];
 
         foreach ($gurus as $guru) {
-            \DB::table('gurus')->updateOrInsert(
+            $guruRecord = \DB::table('gurus')->updateOrInsert(
                 ['nik' => $guru['nik']],
                 $guru
             );
+            
+            // Create or update User record linked to Guru
+            $guruModel = Guru::where('nik', $guru['nik'])->first();
+            if ($guruModel) {
+                User::updateOrCreate(
+                    ['email' => $guru['email']],
+                    [
+                        'name' => $guru['name'],
+                        'email' => $guru['email'],
+                        'password' => Hash::make($guru['password_hash']),
+                        'userable_type' => 'App\\Models\\Guru',
+                        'userable_id' => $guruModel->id,
+                    ]
+                );
+            }
         }
     }
 }

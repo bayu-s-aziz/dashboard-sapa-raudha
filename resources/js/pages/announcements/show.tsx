@@ -1,5 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowLeft, Download, Edit, Eye, FileText, User, X } from 'lucide-react';
+import { ArrowLeft, Download, Edit, Eye, FileText, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import Heading from '@/components/heading';
@@ -127,10 +127,7 @@ export default function AnnouncementShow({ announcement }: Props) {
         setPreviewDialogOpen(true);
     };
 
-    const closePreview = () => {
-        setPreviewAttachment(null);
-        setPreviewDialogOpen(false);
-    };
+
 
     const renderPreviewContent = () => {
         if (!previewAttachment) return null;

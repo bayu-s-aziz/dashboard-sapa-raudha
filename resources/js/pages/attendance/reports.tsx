@@ -1,8 +1,8 @@
 import { Head, router, usePage } from '@inertiajs/react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Download, Search } from 'lucide-react';
-import { useEffect, useState, type FormEvent } from 'react';
+import { Download } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';

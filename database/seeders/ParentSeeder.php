@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use App\Models\ParentModel;
+use App\Models\User;
 
 class ParentSeeder extends Seeder
 {
@@ -496,10 +499,31 @@ class ParentSeeder extends Seeder
         ];
 
         foreach ($parents as $parent) {
+            // Compute a synthetic email if not provided
+            $email = 'parent' . $parent['student_id'] . '@ra-alislam.sch.id';
+            $parent['email'] = $email;
+
+            // Upsert parent record with email
             \DB::table('parents')->updateOrInsert(
                 ['student_id' => $parent['student_id']],
                 $parent
             );
+
+            // Create or update linked user account
+            $parentModel = ParentModel::where('student_id', $parent['student_id'])->first();
+            if ($parentModel) {
+                $displayName = $parent['father_name'] ?: ($parent['mother_name'] ?: ('Orang Tua Siswa #' . $parent['student_id']));
+                User::updateOrCreate(
+                    ['email' => $email],
+                    [
+                        'name' => $displayName,
+                        'email' => $email,
+                        'password' => Hash::make($parent['password_hash'] ?? 'Alislam123'),
+                        'userable_type' => ParentModel::class,
+                        'userable_id' => $parentModel->id,
+                    ]
+                );
+            }
         }
     }
 }

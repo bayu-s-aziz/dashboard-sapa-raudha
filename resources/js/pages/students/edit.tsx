@@ -142,7 +142,7 @@ export default function StudentEdit({ student, classes }: Props) {
                     variant: 'destructive',
                 });
             }
-        } catch (error) {
+        } catch {
             toast({
                 title: 'Gagal',
                 description: 'Terjadi kesalahan saat upload foto',

@@ -101,7 +101,6 @@ export default function ClassesIndex({ classes, groups, academic_years, all_acad
     const [addYearDialogOpen, setAddYearDialogOpen] = useState(false);
     const [newAcademicYear, setNewAcademicYear] = useState('');
     const [setActiveDialogOpen, setSetActiveDialogOpen] = useState(false);
-    const [academicYearsList, setAcademicYearsList] = useState<AcademicYear[]>([]);
 
     // Debounced search values
     const debouncedSearch = useDebounce(search, 300);
@@ -125,11 +124,6 @@ export default function ClassesIndex({ classes, groups, academic_years, all_acad
             });
         }
     }, [page.props.flash]);
-
-    useEffect(() => {
-        // Set academic years from props
-        setAcademicYearsList(all_academic_years || []);
-    }, [all_academic_years]);
 
     // Real-time search effect
     useEffect(() => {
@@ -534,11 +528,11 @@ export default function ClassesIndex({ classes, groups, academic_years, all_acad
                         </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
-                        {academicYearsList.length === 0 ? (
+                        {!all_academic_years || all_academic_years.length === 0 ? (
                             <p className="text-sm text-muted-foreground">Tidak ada tahun ajaran tersedia.</p>
                         ) : (
                             <div className="space-y-2">
-                                {academicYearsList.map((year) => (
+                                {all_academic_years.map((year) => (
                                     <div
                                         key={year.id}
                                         className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-muted/50 ${

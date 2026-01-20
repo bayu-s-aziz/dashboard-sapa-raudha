@@ -150,7 +150,7 @@ export default function UsersShow({ user }: Props) {
                     variant: 'destructive',
                 });
             }
-        } catch (error) {
+        } catch {
             toast({
                 title: 'Gagal',
                 description: 'Terjadi kesalahan saat mengganti pengguna aktif',

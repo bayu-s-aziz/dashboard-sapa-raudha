@@ -1,6 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { Edit, Eye, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useState } from 'react';
 
 import Heading from '@/components/heading';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';

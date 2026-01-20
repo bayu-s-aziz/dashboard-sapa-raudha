@@ -31,6 +31,14 @@ class Siswa extends Model
         'updated_at' => 'datetime',
     ];
 
+        /**
+         * Get the user record associated with this student.
+         */
+        public function user()
+        {
+            return $this->morphOne(User::class, 'userable');
+        }
+
     /**
      * Get the class this student belongs to.
      */

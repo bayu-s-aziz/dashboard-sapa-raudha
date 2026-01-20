@@ -114,22 +114,27 @@ class UserController extends Controller
      */
     public function parents(Request $request)
     {
-        $query = User::with('userable')
+        $query = User::with(['userable', 'userable.student'])
             ->where('userable_type', ParentModel::class);
 
         // Search by name or email
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%$search%")
-                  ->orWhere('email', 'like', "%$search%")
-                  ->orWhereHasMorph('userable', [ParentModel::class], function ($q) use ($search) {
-                      $q->where('father_name', 'like', "%$search%")
-                        ->orWhere('mother_name', 'like', "%$search%")
-                        ->orWhere('father_phone', 'like', "%$search%")
-                        ->orWhere('mother_phone', 'like', "%$search%");
-                  });
-            });
+                        $query->where(function ($q) use ($search) {
+                                $q->where('name', 'like', "%$search%")
+                                    ->orWhere('email', 'like', "%$search%")
+                                    ->orWhereHasMorph('userable', [ParentModel::class], function ($q) use ($search) {
+                                            $q->where('father_name', 'like', "%$search%")
+                                                ->orWhere('mother_name', 'like', "%$search%")
+                                                ->orWhere('father_phone', 'like', "%$search%")
+                                                ->orWhere('mother_phone', 'like', "%$search%")
+                                                ->orWhereHas('student', function ($qs) use ($search) {
+                                                        $qs->where('name', 'like', "%$search%")
+                                                             ->orWhere('nis', 'like', "%$search%")
+                                                             ->orWhere('nisn', 'like', "%$search%");
+                                                });
+                                    });
+                        });
         }
 
         // Pagination

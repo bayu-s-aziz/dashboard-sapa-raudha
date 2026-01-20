@@ -6,11 +6,10 @@ import {
     Trash2,
     UserCog,
 } from 'lucide-react';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useState } from 'react';
 
 import Heading from '@/components/heading';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
@@ -31,13 +30,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import {
     Table,
     TableBody,
     TableCell,
@@ -57,11 +49,17 @@ interface User {
     email: string;
     userable_type: string;
     userable?: {
-        nik?: string;
-        phone?: string;
-        role?: string;
+        father_name?: string;
+        mother_name?: string;
+        father_phone?: string;
+        mother_phone?: string;
         address?: string;
         photo_url?: string;
+        student?: {
+            name: string;
+            nis?: string;
+            nisn?: string;
+        };
     };
     created_at: string;
 }
@@ -130,29 +128,12 @@ export default function ParentsIndex({ users, filters }: Props) {
     useEffect(() => {
         router.get(
             '/users/parents',
-            { search: debouncedSearch || undefined },
-            { preserveState: true, preserveScroll: true },
+            { search: debouncedSearch || undefined, page: 1 },
+            { preserveState: true, preserveScroll: true, replace: true },
         );
     }, [debouncedSearch]);
 
-    const getUserType = (user: User) => {
-        return 'Orang Tua';
-    };
-
-    const getUserTypeBadge = (user: User) => {
-        const userType = getUserType(user);
-        const variants: Record<
-            string,
-            'default' | 'secondary' | 'destructive' | 'outline'
-        > = {
-            Admin: 'destructive',
-            Guru: 'default',
-            'Orang Tua': 'secondary',
-        };
-        return (
-            <Badge variant={variants[userType] || 'default'}>{userType}</Badge>
-        );
-    };
+    // Removed user type badge as table now shows student/parent details
 
     const handleDelete = (user: User) => {
         setUserToDelete(user);
@@ -228,8 +209,7 @@ export default function ParentsIndex({ users, filters }: Props) {
                                 <TableRow>
                                     <TableHead>Pengguna</TableHead>
                                     <TableHead>Email</TableHead>
-                                    <TableHead>Tipe</TableHead>
-                                    <TableHead>NIK/Telepon</TableHead>
+                                    <TableHead>Siswa</TableHead>
                                     <TableHead>Bergabung</TableHead>
                                     <TableHead className="text-right">
                                         Aksi
@@ -239,10 +219,7 @@ export default function ParentsIndex({ users, filters }: Props) {
                             <TableBody>
                                 {users.data.length === 0 ? (
                                     <TableRow>
-                                        <TableCell
-                                            colSpan={6}
-                                            className="h-24 text-center"
-                                        >
+                                        <TableCell colSpan={5} className="h-24 text-center">
                                             Tidak ada data pengguna.
                                         </TableCell>
                                     </TableRow>
@@ -252,60 +229,26 @@ export default function ParentsIndex({ users, filters }: Props) {
                                             <TableCell>
                                                 <div className="flex items-center gap-3">
                                                     <Avatar>
-                                                        <AvatarImage
-                                                            src={user.userable?.photo_url || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`}
-                                                        />
-                                                        <AvatarFallback>
-                                                            {getInitials(
-                                                                user.name,
-                                                            )}
-                                                        </AvatarFallback>
+                                                        <AvatarImage src={user.userable?.photo_url || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`} />
+                                                        <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                                                     </Avatar>
-                                                    <div>
-                                                        <div className="font-medium">
-                                                            {user.name}
-                                                        </div>
-                                                    </div>
+                                                    <div className="font-medium">{user.name}</div>
                                                 </div>
                                             </TableCell>
-                                            <TableCell>
-                                                {user.email}
-                                            </TableCell>
-                                            <TableCell>
-                                                {getUserTypeBadge(user)}
-                                            </TableCell>
+                                            <TableCell>{user.email}</TableCell>
                                             <TableCell>
                                                 <div className="text-sm">
-                                                    {user.userable?.nik && (
-                                                        <div>
-                                                            NIK:{' '}
-                                                            {
-                                                                user.userable
-                                                                    .nik
-                                                            }
-                                                        </div>
+                                                    {user.userable?.student?.name || '-'}
+                                                    {user.userable?.student?.nis && (
+                                                        <div className="text-muted-foreground">NIS: {user.userable.student.nis}</div>
                                                     )}
-                                                    {user.userable?.phone && (
-                                                        <div className="text-muted-foreground">
-                                                            {
-                                                                user.userable
-                                                                    .phone
-                                                            }
-                                                        </div>
+                                                    {user.userable?.student?.nisn && (
+                                                        <div className="text-muted-foreground">NISN: {user.userable.student.nisn}</div>
                                                     )}
-                                                    {!user.userable?.nik &&
-                                                        !user.userable
-                                                            ?.phone && (
-                                                            <span className="text-muted-foreground">
-                                                                -
-                                                            </span>
-                                                        )}
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                {new Date(
-                                                    user.created_at,
-                                                ).toLocaleDateString('id-ID', {
+                                                {new Date(user.created_at).toLocaleDateString('id-ID', {
                                                     day: 'numeric',
                                                     month: 'short',
                                                     year: 'numeric',
@@ -313,36 +256,23 @@ export default function ParentsIndex({ users, filters }: Props) {
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <DropdownMenu>
-                                                    <DropdownMenuTrigger
-                                                        asChild
-                                                    >
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                        >
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="icon">
                                                             <MoreHorizontal className="h-4 w-4" />
-                                                            <span className="sr-only">
-                                                                Menu aksi
-                                                            </span>
+                                                            <span className="sr-only">Menu aksi</span>
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
-                                                        <DropdownMenuLabel>
-                                                            Aksi
-                                                        </DropdownMenuLabel>
+                                                        <DropdownMenuLabel>Aksi</DropdownMenuLabel>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem asChild>
-                                                            <Link
-                                                                href={`/users/${user.id}`}
-                                                            >
+                                                            <Link href={`/users/${user.id}`}>
                                                                 <UserCog className="mr-2 h-4 w-4" />
                                                                 Detail
                                                             </Link>
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem asChild>
-                                                            <Link
-                                                                href={`/users/${user.id}/edit`}
-                                                            >
+                                                            <Link href={`/users/${user.id}/edit`}>
                                                                 <Edit className="mr-2 h-4 w-4" />
                                                                 Edit
                                                             </Link>
@@ -350,11 +280,7 @@ export default function ParentsIndex({ users, filters }: Props) {
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem
                                                             className="text-destructive focus:text-destructive"
-                                                            onClick={() =>
-                                                                handleDelete(
-                                                                    user,
-                                                                )
-                                                            }
+                                                            onClick={() => handleDelete(user)}
                                                         >
                                                             <Trash2 className="mr-2 h-4 w-4" />
                                                             Hapus
@@ -388,6 +314,9 @@ export default function ParentsIndex({ users, filters }: Props) {
                                     router.get('/users/parents', {
                                         page: users.current_page - 1,
                                         search: search || undefined,
+                                    }, {
+                                        preserveState: true,
+                                        preserveScroll: true,
                                     })
                                 }
                             >
@@ -400,6 +329,9 @@ export default function ParentsIndex({ users, filters }: Props) {
                                     router.get('/users/parents', {
                                         page: users.current_page + 1,
                                         search: search || undefined,
+                                    }, {
+                                        preserveState: true,
+                                        preserveScroll: true,
                                     })
                                 }
                             >
