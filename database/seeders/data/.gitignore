@@ -1,0 +1,4 @@
+# IMPORTANT: Keep all backup files in version control
+# These files are critical for database recovery
+!*.json
+!*.md
