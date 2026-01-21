@@ -39,5 +39,14 @@ export interface User {
     two_factor_enabled?: boolean;
     created_at: string;
     updated_at: string;
+    /**
+     * Polymorphic relation payload for userable (e.g. Siswa/Guru).
+     * Include known fields used in the frontend such as `photo_url`.
+     */
+    userable?: {
+        photo_url?: string | null;
+        [key: string]: unknown;
+    };
+
     [key: string]: unknown; // This allows for additional properties...
 }

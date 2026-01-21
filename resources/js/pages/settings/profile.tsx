@@ -1,5 +1,6 @@
 import { Transition } from '@headlessui/react';
 import { Form, Head, Link, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import DeleteUser from '@/components/delete-user';
@@ -13,6 +14,9 @@ import SettingsLayout from '@/layouts/settings/layout';
 import { edit } from '@/routes/profile';
 import { send } from '@/routes/verification';
 import { type BreadcrumbItem, type SharedData } from '@/types';
+import PhotoUpload from '@/components/photo-upload';
+import { Upload } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,6 +34,53 @@ export default function Profile({
 }) {
     const { auth } = usePage<SharedData>().props;
 
+    // New state for photo upload
+    const [photoFile, setPhotoFile] = useState<File | null>(null);
+    const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+    const handlePhotoUpload = async () => {
+        if (!photoFile) return;
+
+        setUploadingPhoto(true);
+        try {
+            const formData = new FormData();
+            formData.append('photo', photoFile);
+
+            const response = await fetch(`/api/users/${auth.user.id}/upload-photo`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                },
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                toast({
+                    title: 'Berhasil',
+                    description: 'Foto berhasil diupload',
+                    variant: 'success',
+                });
+                window.location.reload();
+            } else {
+                toast({
+                    title: 'Gagal',
+                    description: result.message || 'Terjadi kesalahan saat upload foto',
+                    variant: 'destructive',
+                });
+            }
+        } catch {
+            toast({
+                title: 'Gagal',
+                description: 'Terjadi kesalahan saat upload foto',
+                variant: 'destructive',
+            });
+        } finally {
+            setUploadingPhoto(false);
+        }
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Profile settings" />
@@ -42,6 +93,27 @@ export default function Profile({
                         title="Profile information"
                         description="Update your name and email address"
                     />
+
+                    {/* PHOTO UPLOAD */}
+                    <PhotoUpload
+                        currentPhoto={auth.user.userable?.photo_url}
+                        onPhotoChange={setPhotoFile}
+                        label="Foto Profil"
+                    />
+
+                    {photoFile && (
+                        <div className="flex justify-end">
+                            <Button
+                                type="button"
+                                onClick={handlePhotoUpload}
+                                disabled={uploadingPhoto}
+                                className="bg-green-600 hover:bg-green-700"
+                            >
+                                <Upload className="mr-2 h-4 w-4" />
+                                {uploadingPhoto ? 'Mengupload...' : 'Upload Foto'}
+                            </Button>
+                        </div>
+                    )}
 
                     <Form
                         {...ProfileController.update.form()}
