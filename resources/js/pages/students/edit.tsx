@@ -179,7 +179,7 @@ export default function StudentEdit({ student, classes }: Props) {
                         <CardContent className="space-y-6">
                             {/* Photo Upload Section */}
                             <PhotoUpload
-                                currentPhoto={student.photo_url}
+                                currentPhoto={student.avatar}
                                 onPhotoChange={setPhotoFile}
                                 label="Foto Siswa"
                             />

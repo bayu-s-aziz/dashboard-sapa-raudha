@@ -214,7 +214,8 @@ class GuruController extends Controller
                 $filename = 'guru_' . $id . '_' . time() . '.' . $file->getClientOriginalExtension();
                 $path = $file->storeAs('photos/gurus', $filename, 'public');
 
-                $guru->update(['photo_url' => '/storage/' . $path]);
+                // Store relative path without /storage/ prefix
+                $guru->update(['photo_url' => $path]);
             }
 
             return response()->json([

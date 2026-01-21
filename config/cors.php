@@ -24,7 +24,7 @@ return [
     // If you set allowed_origins to empty array, fallback to allow all origins.
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*'],
+    'allowed_headers' => ['http://localhost'],
 
     'exposed_headers' => [],
 

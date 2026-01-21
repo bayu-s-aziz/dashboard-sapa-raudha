@@ -150,7 +150,7 @@ export default function UsersEdit({ user }: Props) {
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Photo Upload Section */}
                             <PhotoUpload
-                                currentPhoto={user.userable?.photo_url}
+                                currentPhoto={user.avatar}
                                 onPhotoChange={setPhotoFile}
                                 label="Foto Profil"
                             />

@@ -274,7 +274,8 @@ class StudentController extends Controller
                 $filename = 'student_' . $id . '_' . time() . '.' . $file->getClientOriginalExtension();
                 $path = $file->storeAs('photos/students', $filename, 'public');
 
-                $student->update(['photo_url' => '/storage/' . $path]);
+                // Store relative path without /storage/ prefix
+                $student->update(['photo_url' => $path]);
             }
 
             return response()->json([

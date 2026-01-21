@@ -9,9 +9,23 @@ use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\ParentController;
 
-// Protect API routes with Sanctum tokens. If you need public endpoints,
+// Public authentication routes for Flutter / mobile clients
+// Forward to Fortify routes for login
+Route::post('/auth/login', function (Illuminate\Http\Request $request) {
+    return app(\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class)->store($request);
+});
+
+Route::post('/auth/logout', function (Illuminate\Http\Request $request) {
+    return app(\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class)->destroy($request);
+});
+
+Route::get('/auth/logout', function (Illuminate\Http\Request $request) {
+    return app(\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class)->destroy($request);
+});
+
+// Protect API routes with web session authentication. If you need public endpoints,
 // move them outside this middleware group or add explicit exceptions.
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['web', 'auth'])->group(function () {
     // User Management Routes
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index']);

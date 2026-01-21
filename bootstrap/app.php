@@ -2,7 +2,7 @@
 
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
-use Fruitcake\Cors\HandleCors;
+use App\Http\Middleware\Cors;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,14 +18,24 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
+        // Exclude API routes from CSRF verification (using session auth instead)
+        $middleware->validateCsrfTokens(except: [
+            'api/*',
+        ]);
+
+        // Apply custom CORS globally so it handles Fortify auth routes from Flutter
+        $middleware->prepend(Cors::class);
+
         $middleware->web(append: [
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
-        // Ensure CORS is applied to API routes so mobile/web clients can access endpoints
+
+        // Add session support to API routes for web-based authentication
         $middleware->api(append: [
-            HandleCors::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

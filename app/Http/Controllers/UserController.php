@@ -429,13 +429,28 @@ class UserController extends Controller
             if ($request->hasFile('photo')) {
                 $file = $request->file('photo');
                 $filename = 'user_' . $id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                
+                // Delete old photo if exists
+                if ($user->userable_type === Guru::class && $user->userable && $user->userable->photo_url) {
+                    \Storage::disk('public')->delete($user->userable->photo_url);
+                } elseif ($user->userable_type === ParentModel::class && $user->userable && $user->userable->photo_url) {
+                    \Storage::disk('public')->delete($user->userable->photo_url);
+                }
+                
                 $path = $file->storeAs('photos/users', $filename, 'public');
+                
+                if (!$path) {
+                    return response()->json([
+                        'message' => 'Gagal menyimpan file',
+                    ], 500);
+                }
 
                 // Update photo_url based on userable type
+                // Store relative path without /storage/ prefix - the Avatar accessor handles URL construction
                 if ($user->userable_type === Guru::class) {
-                    $user->userable->update(['photo_url' => '/storage/' . $path]);
+                    $user->userable->update(['photo_url' => $path]);
                 } elseif ($user->userable_type === ParentModel::class) {
-                    $user->userable->update(['photo_url' => '/storage/' . $path]);
+                    $user->userable->update(['photo_url' => $path]);
                 }
             }
 
@@ -444,6 +459,7 @@ class UserController extends Controller
                 'data' => $user->load('userable'),
             ]);
         } catch (\Exception $e) {
+            \Log::error('Photo upload error for user ' . $id . ': ' . $e->getMessage());
             return response()->json([
                 'message' => 'Error upload foto',
                 'error' => $e->getMessage(),

@@ -96,7 +96,7 @@ export default function Profile({
 
                     {/* PHOTO UPLOAD */}
                     <PhotoUpload
-                        currentPhoto={auth.user.userable?.photo_url}
+                        currentPhoto={auth.user.avatar}
                         onPhotoChange={setPhotoFile}
                         label="Foto Profil"
                     />

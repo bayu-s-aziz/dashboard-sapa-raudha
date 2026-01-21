@@ -276,13 +276,9 @@ export default function UsersIndex({ users, filters }: Props) {
                                                 <div className="flex items-center gap-3">
                                                     <Avatar>
                                                         <AvatarImage
-                                                            src={`https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`}
+                                                            src={user.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`}
                                                         />
-                                                        <AvatarFallback>
-                                                            {getInitials(
-                                                                user.name,
-                                                            )}
-                                                        </AvatarFallback>
+                                                        <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                                                     </Avatar>
                                                     <div>
                                                         <div className="font-medium">

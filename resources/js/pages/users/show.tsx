@@ -193,7 +193,7 @@ export default function UsersShow({ user }: Props) {
                             <div className="flex flex-col items-center space-y-4">
                                 <Avatar className="h-24 w-24">
                                     <AvatarImage
-                                        src={user.userable?.photo_url || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`}
+                                        src={user.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`}
                                     />
                                     <AvatarFallback>
                                         {getInitials(user.name)}

@@ -249,7 +249,7 @@ export default function TeachersIndex({ users, filters }: Props) {
                                                 <div className="flex items-center gap-3">
                                                     <Avatar>
                                                         <AvatarImage
-                                                            src={user.userable?.photo_url || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`}
+                                                            src={user.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`}
                                                         />
                                                         <AvatarFallback>
                                                             {getInitials(

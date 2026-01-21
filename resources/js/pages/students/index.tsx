@@ -261,7 +261,7 @@ export default function StudentsIndex({ students, classes, filters }: Props) {
                                                     <Avatar>
                                                         <AvatarImage
                                                             src={
-                                                                student.photo_url ||
+                                                                student.avatar ||
                                                                 undefined
                                                             }
                                                         />

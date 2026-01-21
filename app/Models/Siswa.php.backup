@@ -33,13 +33,13 @@ class Siswa extends Model
 
     protected $appends = ['avatar'];
 
-    /**
-     * Get the user record associated with this student.
-     */
-    public function user()
-    {
-        return $this->morphOne(User::class, 'userable');
-    }
+        /**
+         * Get the user record associated with this student.
+         */
+        public function user()
+        {
+            return $this->morphOne(User::class, 'userable');
+        }
 
     /**
      * Get the class this student belongs to.
@@ -74,6 +74,14 @@ class Siswa extends Model
     }
 
     /**
+     * Scope to filter by gender.
+     */
+    public function scopeGender($query, $gender)
+    {
+        return $query->where('gender', $gender);
+    }
+
+    /**
      * Get the student's avatar URL.
      */
     public function getAvatarAttribute()
@@ -88,20 +96,3 @@ class Siswa extends Model
         }
         return null;
     }
-
-    /**
-     * Scope to filter by gender.
-     */
-    public function scopeGender($query, $gender)
-    {
-        return $query->where('gender', $gender);
-    }
-
-    /**
-     * Scope to filter by class.
-     */
-    public function scopeInClass($query, $classId)
-    {
-        return $query->where('class_id', $classId);
-    }
-}

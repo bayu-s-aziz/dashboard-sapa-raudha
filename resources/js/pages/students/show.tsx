@@ -130,7 +130,7 @@ export default function StudentShow({ student }: Props) {
                             <div className="flex flex-col items-center gap-4">
                                 <Avatar className="h-32 w-32">
                                     <AvatarImage
-                                        src={student.photo_url || undefined}
+                                        src={student.avatar || undefined}
                                     />
                                     <AvatarFallback className="text-2xl">
                                         {getInitials(student.name)}

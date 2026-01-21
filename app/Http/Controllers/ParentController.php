@@ -238,7 +238,8 @@ class ParentController extends Controller
                 $filename = 'parent_' . $id . '_' . time() . '.' . $file->getClientOriginalExtension();
                 $path = $file->storeAs('photos/parents', $filename, 'public');
 
-                $parent->update(['photo_url' => '/storage/' . $path]);
+                // Store relative path without /storage/ prefix
+                $parent->update(['photo_url' => $path]);
             }
 
             return response()->json([
