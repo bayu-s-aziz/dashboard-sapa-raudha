@@ -403,6 +403,20 @@ class UserController extends Controller
             ], 404);
         }
 
+        // Authorization: only the owner or an admin guru may upload/change the photo
+        $authUser = $request->user();
+        if ($authUser->id !== $user->id) {
+            $isAdmin = false;
+            if ($authUser->isGuru() && $authUser->userable) {
+                $isAdmin = method_exists($authUser->userable, 'isAdmin') && $authUser->userable->isAdmin();
+            }
+            if (!$isAdmin) {
+                return response()->json([
+                    'message' => 'Tidak diizinkan untuk mengubah foto pengguna ini',
+                ], 403);
+            }
+        }
+
         $validator = Validator::make($request->all(), [
             'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
