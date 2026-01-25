@@ -10,7 +10,9 @@ export default defineConfig({
             input: [
                 'resources/css/app.css', 
                 'resources/js/app.tsx',
-                'resources/js/pages/attendance/reports.tsx'
+                'resources/js/pages/attendance/reports.tsx',
+                'resources/js/pages/leave_requests/index.tsx',
+                'resources/js/pages/leave_requests/show.tsx'
             ],
             ssr: 'resources/js/ssr.tsx',
             refresh: true,

@@ -55,6 +55,7 @@ interface User {
     id: number;
     name: string;
     email: string;
+    avatar?: string;
     userable_type: string;
     userable?: {
         nik?: string;

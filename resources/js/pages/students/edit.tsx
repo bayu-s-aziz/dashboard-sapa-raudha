@@ -31,6 +31,7 @@ interface Siswa {
     nisn: string;
     nis: string;
     name: string;
+    avatar?: string;
     class_id: number;
     gender: 'L' | 'P';
     birth_place: string | null;

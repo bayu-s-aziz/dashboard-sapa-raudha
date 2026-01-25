@@ -9,6 +9,9 @@ use App\Models\Kehadiran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class LeaveRequestController extends Controller
 {
@@ -55,6 +58,183 @@ class LeaveRequestController extends Controller
         $leaveRequests = $query->orderBy('request_date', 'desc')->paginate($perPage);
 
         return response()->json($leaveRequests);
+    }
+
+    /**
+     * Display list of leave requests (Inertia / web admin)
+     */
+    public function indexInertia(Request $request)
+    {
+        $query = LeaveRequest::with('student', 'reviewer');
+
+        if ($request->has('status') && !empty($request->status)) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->has('student_id') && !empty($request->student_id)) {
+            $query->where('student_id', $request->student_id);
+        }
+
+        // Filter by class (student.class_id)
+        if ($request->has('class_id') && !empty($request->class_id)) {
+            $classId = $request->class_id;
+            $query->whereHas('student', function ($q) use ($classId) {
+                $q->where('class_id', $classId);
+            });
+        }
+
+        // Search by student name or reason
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('reason', 'like', "%$search%")
+                  ->orWhereHas('student', function ($q2) use ($search) {
+                      $q2->where('name', 'like', "%$search%")
+                        ->orWhere('nisn', 'like', "%$search%");
+                  });
+            });
+        }
+
+        if ($request->has('start_date') && !empty($request->start_date)) {
+            $query->whereDate('request_date', '>=', $request->start_date);
+        }
+
+        if ($request->has('end_date') && !empty($request->end_date)) {
+            $query->whereDate('request_date', '<=', $request->end_date);
+        }
+
+        $perPage = $request->input('per_page', 15);
+        $leaveRequests = $query->orderBy('request_date', 'desc')->paginate($perPage)->appends($request->query());
+
+        // Provide class list for filter
+        $classes = [];
+        try {
+            $classes = \App\Models\Kelas::select('id', 'name')->get();
+        } catch (\Exception $e) {
+            // ignore if kelas model/table missing
+            $classes = [];
+        }
+
+        return Inertia::render('leave_requests/index', [
+            'leaveRequests' => $leaveRequests,
+            'classes' => $classes,
+            'filters' => $request->only(['status', 'student_id', 'start_date', 'end_date', 'per_page', 'search', 'class_id']),
+        ]);
+    }
+
+    /**
+     * Show leave request detail (Inertia)
+     */
+    public function showInertia($id)
+    {
+        $leaveRequest = LeaveRequest::with('student', 'reviewer')->find($id);
+
+        if (!$leaveRequest) {
+            return Redirect::back()->with('error', 'Permintaan izin tidak ditemukan');
+        }
+
+        return Inertia::render('leave_requests/show', [
+            'leaveRequest' => $leaveRequest,
+        ]);
+    }
+
+    /**
+     * Approve a leave request (Inertia)
+     */
+    public function approveInertia(Request $request, $id)
+    {
+        $leaveRequest = LeaveRequest::find($id);
+
+        if (!$leaveRequest) {
+            return Redirect::back()->with('error', 'Permintaan izin tidak ditemukan');
+        }
+
+        if ($leaveRequest->status !== 'pending') {
+            return Redirect::back()->with('error', 'Hanya permintaan yang pending yang dapat disetujui');
+        }
+
+        $reviewedBy = null;
+        if (Auth::check() && Auth::user()->userable) {
+            $reviewedBy = Auth::user()->userable->id ?? null;
+        }
+
+        if (!$reviewedBy) {
+            return Redirect::back()->with('error', 'Reviewer tidak tersedia');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'review_notes' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
+
+        try {
+            $leaveRequest->approve($reviewedBy, $request->input('review_notes', null));
+            return Redirect::route('leave-requests.index')->with('success', 'Permintaan izin berhasil disetujui');
+        } catch (\Exception $e) {
+            return Redirect::back()->with('error', 'Error menyetujui permintaan izin: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Reject a leave request (Inertia)
+     */
+    public function rejectInertia(Request $request, $id)
+    {
+        $leaveRequest = LeaveRequest::find($id);
+
+        if (!$leaveRequest) {
+            return Redirect::back()->with('error', 'Permintaan izin tidak ditemukan');
+        }
+
+        if ($leaveRequest->status !== 'pending') {
+            return Redirect::back()->with('error', 'Hanya permintaan yang pending yang dapat ditolak');
+        }
+
+        $reviewedBy = null;
+        if (Auth::check() && Auth::user()->userable) {
+            $reviewedBy = Auth::user()->userable->id ?? null;
+        }
+
+        if (!$reviewedBy) {
+            return Redirect::back()->with('error', 'Reviewer tidak tersedia');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'review_notes' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
+
+        try {
+            $leaveRequest->reject($reviewedBy, $request->input('review_notes', null));
+            return Redirect::route('leave-requests.index')->with('success', 'Permintaan izin berhasil ditolak');
+        } catch (\Exception $e) {
+            return Redirect::back()->with('error', 'Error menolak permintaan izin: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Delete leave request (Inertia)
+     */
+    public function destroyInertia($id)
+    {
+        $leaveRequest = LeaveRequest::find($id);
+
+        if (!$leaveRequest) {
+            return Redirect::back()->with('error', 'Permintaan izin tidak ditemukan');
+        }
+
+        try {
+            $leaveRequest->delete();
+            return Redirect::route('leave-requests.index')->with('success', 'Permintaan izin berhasil dihapus');
+        } catch (\Exception $e) {
+            return Redirect::back()->with('error', 'Error menghapus permintaan izin: ' . $e->getMessage());
+        }
     }
 
     /**

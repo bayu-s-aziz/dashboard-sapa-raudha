@@ -70,6 +70,11 @@ const mainNavItems: NavItem[] = [
                 href: '/attendance/reports',
                 icon: BarChart3,
             },
+            {
+                title: 'Permohonan Izin',
+                href: '/leave-requests',
+                icon: Folder,
+            },
         ],
     },
 ];

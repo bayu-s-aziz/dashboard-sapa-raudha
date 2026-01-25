@@ -68,6 +68,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('attendance/{kehadiran}', [AttendanceController::class, 'updateInertia'])->name('attendance.update');
     Route::delete('attendance/{kehadiran}', [AttendanceController::class, 'destroyInertia'])->name('attendance.destroy');
     Route::get('attendance/class/{classId}/daily', [AttendanceController::class, 'dailyClassAttendance'])->name('attendance.class.daily');
+    
+    // Leave requests (web admin / Inertia)
+    Route::get('leave-requests', [\App\Http\Controllers\LeaveRequestController::class, 'indexInertia'])->name('leave-requests.index');
+    Route::get('leave-requests/{id}', [\App\Http\Controllers\LeaveRequestController::class, 'showInertia'])->name('leave-requests.show');
+    Route::post('leave-requests/{id}/approve', [\App\Http\Controllers\LeaveRequestController::class, 'approveInertia'])->name('leave-requests.approve');
+    Route::post('leave-requests/{id}/reject', [\App\Http\Controllers\LeaveRequestController::class, 'rejectInertia'])->name('leave-requests.reject');
+    Route::delete('leave-requests/{id}', [\App\Http\Controllers\LeaveRequestController::class, 'destroyInertia'])->name('leave-requests.destroy');
 });
 
 require __DIR__.'/settings.php';
