@@ -454,6 +454,87 @@ getStudentReportForm.head = (args: { studentId: string | number } | [studentId: 
 getStudentReport.form = getStudentReportForm
 
 /**
+* @see \App\Http\Controllers\AttendanceController::getAvailableStudents
+* @see app/Http/Controllers/AttendanceController.php:857
+* @route '/api/attendance/available-students'
+*/
+export const getAvailableStudents = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: getAvailableStudents.url(options),
+    method: 'get',
+})
+
+getAvailableStudents.definition = {
+    methods: ["get","head"],
+    url: '/api/attendance/available-students',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\AttendanceController::getAvailableStudents
+* @see app/Http/Controllers/AttendanceController.php:857
+* @route '/api/attendance/available-students'
+*/
+getAvailableStudents.url = (options?: RouteQueryOptions) => {
+    return getAvailableStudents.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\AttendanceController::getAvailableStudents
+* @see app/Http/Controllers/AttendanceController.php:857
+* @route '/api/attendance/available-students'
+*/
+getAvailableStudents.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: getAvailableStudents.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\AttendanceController::getAvailableStudents
+* @see app/Http/Controllers/AttendanceController.php:857
+* @route '/api/attendance/available-students'
+*/
+getAvailableStudents.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: getAvailableStudents.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\AttendanceController::getAvailableStudents
+* @see app/Http/Controllers/AttendanceController.php:857
+* @route '/api/attendance/available-students'
+*/
+const getAvailableStudentsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: getAvailableStudents.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\AttendanceController::getAvailableStudents
+* @see app/Http/Controllers/AttendanceController.php:857
+* @route '/api/attendance/available-students'
+*/
+getAvailableStudentsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: getAvailableStudents.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\AttendanceController::getAvailableStudents
+* @see app/Http/Controllers/AttendanceController.php:857
+* @route '/api/attendance/available-students'
+*/
+getAvailableStudentsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: getAvailableStudents.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+getAvailableStudents.form = getAvailableStudentsForm
+
+/**
 * @see \App\Http\Controllers\AttendanceController::show
 * @see app/Http/Controllers/AttendanceController.php:101
 * @route '/api/attendance/{id}'
@@ -1589,6 +1670,6 @@ dailyClassAttendanceForm.head = (args: { classId: string | number } | [classId: 
 
 dailyClassAttendance.form = dailyClassAttendanceForm
 
-const AttendanceController = { index, store, getStatistics, bulkUpdate, getClassSummary, getStudentReport, show, update, destroy, indexInertia, reports, exportReports, create, storeInertia, showInertia, edit, updateInertia, destroyInertia, dailyClassAttendance }
+const AttendanceController = { index, store, getStatistics, bulkUpdate, getClassSummary, getStudentReport, getAvailableStudents, show, update, destroy, indexInertia, reports, exportReports, create, storeInertia, showInertia, edit, updateInertia, destroyInertia, dailyClassAttendance }
 
 export default AttendanceController

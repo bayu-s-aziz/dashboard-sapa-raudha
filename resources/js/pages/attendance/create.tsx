@@ -1,6 +1,7 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import axios from 'axios';
 import { ArrowLeft, Save } from 'lucide-react';
-import { type FormEvent, useEffect } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
@@ -54,6 +55,8 @@ export default function AttendanceCreate({ students, gurus }: Props) {
         scanned_by: '',
     });
 
+    const [availableStudents, setAvailableStudents] = useState<Student[]>(students);
+
     useEffect(() => {
         const flash = page.props.flash || {};
         if (flash?.success) {
@@ -71,6 +74,25 @@ export default function AttendanceCreate({ students, gurus }: Props) {
             });
         }
     }, [page.props.flash]);
+
+    useEffect(() => {
+        const fetchAvailableStudents = async () => {
+            if (!data.date) return;
+            try {
+                const response = await axios.get('/api/attendance/available-students', {
+                    params: { date: data.date },
+                    withCredentials: true,
+                });
+                setAvailableStudents(response.data);
+            } catch (error) {
+                console.error('Error fetching available students:', error);
+                // Fallback: gunakan semua siswa jika gagal
+                setAvailableStudents(students);
+            }
+        };
+
+        fetchAvailableStudents();
+    }, [data.date, students]);
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
@@ -131,7 +153,7 @@ export default function AttendanceCreate({ students, gurus }: Props) {
                                             <SelectValue placeholder="Pilih siswa" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {students.map((student) => (
+                                            {availableStudents.map((student) => (
                                                 <SelectItem key={student.id} value={student.id.toString()}>
                                                     {student.name} ({student.nis})
                                                 </SelectItem>
@@ -274,7 +296,10 @@ export default function AttendanceCreate({ students, gurus }: Props) {
                         </CardContent>
                     </Card>
 
-                    <div className="mt-6 flex justify-end">
+                    <div className="mt-6 flex justify-end gap-2">
+                        <Button type="button" variant="outline" asChild>
+                            <Link href="/attendance">Batal</Link>
+                        </Button>
                         <Button type="submit" disabled={processing}>
                             <Save className="mr-2 h-4 w-4" />
                             {processing ? 'Menyimpan...' : 'Simpan Presensi'}

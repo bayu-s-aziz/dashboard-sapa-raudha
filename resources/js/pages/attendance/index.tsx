@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { CalendarDays, Edit, Eye, Plus, Trash2, UserCheck, BarChart3 } from 'lucide-react';
+import { CalendarDays, Edit, Eye, Plus, Trash2, BarChart3, MoreHorizontal } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import Heading from '@/components/heading';
@@ -14,6 +14,13 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
     Select,
@@ -209,7 +216,7 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                         description="Kelola data kehadiran siswa"
                     />
                     <div className="flex gap-2">
-                        <Button variant="outline" asChild>
+                        <Button asChild>
                             <Link href="/attendance/create">
                                 <Plus className="mr-2 h-4 w-4" />
                                 Tambah Presensi
@@ -218,13 +225,7 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                         <Button variant="outline" asChild>
                             <Link href="/attendance/reports">
                                 <BarChart3 className="mr-2 h-4 w-4" />
-                                Laporan Kehadiran
-                            </Link>
-                        </Button>
-                        <Button variant="outline" asChild>
-                            <Link href="/classes">
-                                <UserCheck className="mr-2 h-4 w-4" />
-                                Presensi Harian Kelas
+                                Laporan
                             </Link>
                         </Button>
                     </div>
@@ -372,25 +373,32 @@ export default function AttendanceIndex({ attendance, students, statuses, filter
                                                         )}
                                                     </TableCell>
                                                     <TableCell>
-                                                        <div className="flex gap-2">
-                                                            <Button variant="outline" size="sm" asChild>
-                                                                <Link href={`/attendance/${record.id}`}>
-                                                                    <Eye className="h-4 w-4" />
-                                                                </Link>
-                                                            </Button>
-                                                            <Button variant="outline" size="sm" asChild>
-                                                                <Link href={`/attendance/${record.id}/edit`}>
-                                                                    <Edit className="h-4 w-4" />
-                                                                </Link>
-                                                            </Button>
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                onClick={() => handleDelete(record)}
-                                                            >
-                                                                <Trash2 className="h-4 w-4" />
-                                                            </Button>
-                                                        </div>
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger asChild>
+                                                                <Button variant="ghost" size="icon">
+                                                                    <MoreHorizontal className="h-4 w-4" />
+                                                                </Button>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent align="end">
+                                                                <DropdownMenuItem asChild>
+                                                                    <Link href={`/attendance/${record.id}`}>
+                                                                        <Eye className="mr-2 h-4 w-4" />
+                                                                        Detail
+                                                                    </Link>
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuItem asChild>
+                                                                    <Link href={`/attendance/${record.id}/edit`}>
+                                                                        <Edit className="mr-2 h-4 w-4" />
+                                                                        Edit
+                                                                    </Link>
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete(record)}>
+                                                                    <Trash2 className="mr-2 h-4 w-4" />
+                                                                    Hapus
+                                                                </DropdownMenuItem>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
                                                     </TableCell>
                                                 </TableRow>
                                             ))

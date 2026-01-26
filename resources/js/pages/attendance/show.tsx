@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Calendar, Clock, User, UserCheck } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, User, UserCheck, Plus } from 'lucide-react';
 
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
@@ -97,6 +97,12 @@ export default function AttendanceShow({ attendance }: Props) {
                         <Button variant="outline" asChild>
                             <Link href={`/attendance/${attendance.id}/edit`}>
                                 Edit Presensi
+                            </Link>
+                        </Button>
+                        <Button variant="default" asChild>
+                            <Link href="/attendance/create">
+                                <Plus className="mr-2 h-4 w-4" />
+                                Tambah Presensi Baru
                             </Link>
                         </Button>
                         <Button variant="outline" asChild>

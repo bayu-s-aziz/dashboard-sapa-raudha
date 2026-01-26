@@ -93,6 +93,7 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::post('/bulk-update', [AttendanceController::class, 'bulkUpdate']);
         Route::get('/class-summary', [AttendanceController::class, 'getClassSummary']);
         Route::get('/student/{studentId}/report', [AttendanceController::class, 'getStudentReport']);
+        Route::get('/available-students', [AttendanceController::class, 'getAvailableStudents']);
         Route::get('/{id}', [AttendanceController::class, 'show']);
         Route::put('/{id}', [AttendanceController::class, 'update']);
         Route::delete('/{id}', [AttendanceController::class, 'destroy']);

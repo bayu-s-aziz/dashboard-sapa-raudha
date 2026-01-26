@@ -268,7 +268,10 @@ export default function AttendanceEdit({ attendance, gurus }: Props) {
                         </CardContent>
                     </Card>
 
-                    <div className="mt-6 flex justify-end">
+                    <div className="mt-6 flex justify-end gap-2">
+                        <Button type="button" variant="outline" asChild>
+                            <Link href={`/attendance/${attendance.id}`}>Batal</Link>
+                        </Button>
                         <Button type="submit" disabled={processing}>
                             <Save className="mr-2 h-4 w-4" />
                             {processing ? 'Menyimpan...' : 'Simpan Perubahan'}

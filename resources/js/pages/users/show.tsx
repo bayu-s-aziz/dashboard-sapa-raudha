@@ -83,7 +83,10 @@ export default function UsersShow({ user }: Props) {
     }, [page.props.flash]);
     const getUserType = (user: User) => {
         if (user.userable_type === 'App\\Models\\Guru') {
-            return user.userable?.role === 'admin' ? 'Admin' : 'Guru';
+            const role = user.userable?.role;
+            if (role === 'admin') return 'Admin';
+            if (role === 'kepsek') return 'Kepala Sekolah';
+            return 'Guru';
         }
         return 'Orang Tua';
     };
@@ -96,6 +99,7 @@ export default function UsersShow({ user }: Props) {
         > = {
             Admin: 'destructive',
             Guru: 'default',
+            'Kepala Sekolah': 'outline',
             'Orang Tua': 'secondary',
         };
         return (

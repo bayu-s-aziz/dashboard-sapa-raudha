@@ -379,7 +379,7 @@ export default function StudentCreate({ classes }: Props) {
                         </CardContent>
                     </Card>
 
-                    <div className="flex justify-end space-x-2 mt-6">
+                    <div className="flex justify-end gap-2 mt-6">
                         <Button type="button" variant="outline" asChild>
                             <Link href="/students">Batal</Link>
                         </Button>

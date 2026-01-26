@@ -432,7 +432,7 @@ export default function StudentEdit({ student, classes }: Props) {
                                 </div>
                             </div>
 
-                            <div className="flex justify-end gap-2 border-t pt-4">
+                            <div className="flex justify-end gap-2 mt-6">
                                 <Button variant="outline" asChild>
                                     <Link href="/students">Batal</Link>
                                 </Button>

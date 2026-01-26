@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, GraduationCap, LayoutGrid, Megaphone, School, Users, UserCheck, List, BarChart3 } from 'lucide-react';
+import { Folder, GraduationCap, LayoutGrid, Megaphone, School, Users, UserCheck, List, BarChart3 } from 'lucide-react';
 
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';

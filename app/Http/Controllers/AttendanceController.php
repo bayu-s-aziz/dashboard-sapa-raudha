@@ -850,4 +850,30 @@ class AttendanceController extends Controller
             'gurus' => $gurus,
         ]);
     }
+
+    /**
+     * Get available students for a specific date (students without attendance record)
+     */
+    public function getAvailableStudents(Request $request)
+    {
+        \Log::info('getAvailableStudents called with date: ' . $request->date);
+
+        $validator = Validator::make($request->all(), [
+            'date' => 'required|date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // Get student IDs that already have attendance on the selected date
+        $existingStudentIds = Kehadiran::where('date', $request->date)->pluck('student_id');
+
+        // Get students who don't have attendance on that date
+        $students = Siswa::whereNotIn('id', $existingStudentIds)
+            ->orderBy('name')
+            ->get(['id', 'name', 'nis']); // Only select needed fields for performance
+
+        return response()->json($students);
+    }
 }

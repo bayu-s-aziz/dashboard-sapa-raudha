@@ -142,23 +142,26 @@ class AttendanceSeeder extends Seeder
             }
         }
 
-        // Semester 2: 2026-01-05 to 2026-01-17, random data
+        // Semester 2: 2026-01-05 to 2026-01-26, random data
         $sem2Start = Carbon::create(2026, 1, 5);
-        $sem2End = Carbon::create(2026, 1, 17);
+        $sem2End = Carbon::create(2026, 1, 26);
         $sem2WorkingDays = [];
 
         for ($date = $sem2Start->copy(); $date->lte($sem2End); $date->addDay()) {
-            if ($date->dayOfWeek != Carbon::SUNDAY) {
+            if ($date->dayOfWeek >= Carbon::MONDAY && $date->dayOfWeek <= Carbon::FRIDAY) {
                 $sem2WorkingDays[] = $date->toDateString();
             }
         }
+
+        // Add January 26, 2026 (Sunday) as a special working day
+        $sem2WorkingDays[] = '2026-01-26';
 
         foreach ($absenData as $studentId => $absen) {
             foreach ($sem2WorkingDays as $day) {
                 $status = rand(0, 10);
                 if ($status < 8) { // 80% hadir
                     $checkInHour = rand(6, 7);
-                    $checkInMinute = $checkInHour == 6 ? rand(30, 59) : rand(0, 50);
+                    $checkInMinute = $checkInHour == 6 ? rand(30, 59) : rand(0, 45);
                     $checkIn = sprintf('%02d:%02d:00', $checkInHour, $checkInMinute);
 
                     $checkOutHour = 10;
