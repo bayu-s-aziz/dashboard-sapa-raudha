@@ -97,6 +97,15 @@ export default function AttendanceCreate({ students, gurus }: Props) {
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
+        if (availableStudents.length === 0) {
+            toast({
+                title: 'Tidak dapat membuat presensi',
+                description: 'Semua siswa sudah melakukan presensi pada tanggal ini',
+                variant: 'destructive',
+            });
+            return;
+        }
+
         post('/attendance', {
             onSuccess: () => {
                 toast({
@@ -153,11 +162,17 @@ export default function AttendanceCreate({ students, gurus }: Props) {
                                             <SelectValue placeholder="Pilih siswa" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {availableStudents.map((student) => (
-                                                <SelectItem key={student.id} value={student.id.toString()}>
-                                                    {student.name} ({student.nis})
-                                                </SelectItem>
-                                            ))}
+                                            {availableStudents.length === 0 ? (
+                                                <div className="p-2 text-sm text-muted-foreground text-center">
+                                                    Semua siswa sudah melakukan presensi pada tanggal ini
+                                                </div>
+                                            ) : (
+                                                availableStudents.map((student) => (
+                                                    <SelectItem key={student.id} value={student.id.toString()}>
+                                                        {student.name} ({student.nis})
+                                                    </SelectItem>
+                                                ))
+                                            )}
                                         </SelectContent>
                                     </Select>
                                     {errors.student_id && (
