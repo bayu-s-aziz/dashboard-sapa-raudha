@@ -8,6 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
@@ -31,28 +38,35 @@ interface Props {
     user: User;
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard().url,
-    },
-    {
-        title: 'Manajemen Pengguna',
-        href: '/users',
-    },
-    {
-        title: 'Edit',
-        href: '#',
-    },
-];
-
 export default function UsersEdit({ user }: Props) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard().url,
+        },
+        {
+            title: 'Manajemen Pengguna',
+            href: user.userable_type === 'App\\Models\\Guru' ? '/users/teachers' : '/users',
+        },
+        {
+            title: 'Edit',
+            href: '#',
+        },
+    ];
     const [photoFile, setPhotoFile] = useState<File | null>(null);
     const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+    // Auto-upload when photoFile changes
+    useEffect(() => {
+        if (photoFile) {
+            handlePhotoUpload();
+        }
+    }, [photoFile]);
 
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         email: user.email,
+        role: user.userable_type === 'App\\Models\\Guru' ? user.userable?.role || 'guru' : '',
     });
     const { props } = usePage();
 
@@ -156,18 +170,9 @@ export default function UsersEdit({ user }: Props) {
                                 label="Foto Profil"
                             />
 
-                            {photoFile && (
-                                <div className="flex justify-end">
-                                    <Button
-                                        type="button"
-                                        onClick={handlePhotoUpload}
-                                        disabled={uploadingPhoto}
-                                        className="bg-green-600 hover:bg-green-700"
-                                    >
-                                        <Upload className="mr-2 h-4 w-4" />
-                                        {uploadingPhoto ? 'Mengupload...' : 'Upload Foto'}
-                                    </Button>
-                                </div>
+                            {/* Indikator loading jika sedang upload */}
+                            {uploadingPhoto && (
+                                <p className="text-sm text-blue-600">Mengupload foto...</p>
                             )}
 
                             <div className="space-y-2">
@@ -207,6 +212,30 @@ export default function UsersEdit({ user }: Props) {
                                 )}
                             </div>
 
+                            {user.userable_type === 'App\\Models\\Guru' && (
+                                <div className="space-y-2">
+                                    <Label htmlFor="role">Role</Label>
+                                    <Select
+                                        value={data.role}
+                                        onValueChange={(value) => setData('role', value)}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Pilih role" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="guru">Guru</SelectItem>
+                                            <SelectItem value="admin">Admin</SelectItem>
+                                            <SelectItem value="kepsek">Kepala Sekolah</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    {errors.role && (
+                                        <p className="text-sm text-red-500">
+                                            {errors.role}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+
                             {user.userable?.nik && (
                                 <div className="space-y-2">
                                     <Label>NIK</Label>
@@ -227,7 +256,7 @@ export default function UsersEdit({ user }: Props) {
                                     variant="outline"
                                     asChild
                                 >
-                                    <Link href="/users">Batal</Link>
+                                    <Link href={user.userable_type === 'App\\Models\\Guru' ? '/users/teachers' : '/users'}>Batal</Link>
                                 </Button>
                                 <Button type="submit" disabled={processing}>
                                     {processing ? 'Menyimpan...' : 'Simpan'}

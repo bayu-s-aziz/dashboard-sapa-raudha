@@ -172,7 +172,7 @@ export default function UsersShow({ user }: Props) {
                     />
                     <div className="flex gap-2">
                         <Button variant="outline" asChild>
-                            <Link href="/users">
+                            <Link href={user.userable_type === 'App\\Models\\Guru' ? '/users/teachers' : '/users'}>
                                 <ArrowLeft className="mr-2 h-4 w-4" />
                                 Kembali
                             </Link>

@@ -1,6 +1,6 @@
 import { Transition } from '@headlessui/react';
 import { Form, Head, Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import DeleteUser from '@/components/delete-user';
@@ -37,6 +37,13 @@ export default function Profile({
     // New state for photo upload
     const [photoFile, setPhotoFile] = useState<File | null>(null);
     const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+    // Auto-upload when photoFile changes
+    useEffect(() => {
+        if (photoFile) {
+            handlePhotoUpload();
+        }
+    }, [photoFile]);
 
     const handlePhotoUpload = async () => {
         if (!photoFile) return;
@@ -94,25 +101,16 @@ export default function Profile({
                         description="Update your name and email address"
                     />
 
-                    {/* PHOTO UPLOAD */}
+                    {/* PHOTO UPLOAD - Sekarang tanpa tombol upload terpisah */}
                     <PhotoUpload
                         currentPhoto={auth.user.avatar}
                         onPhotoChange={setPhotoFile}
                         label="Foto Profil"
                     />
 
-                    {photoFile && (
-                        <div className="flex justify-end">
-                            <Button
-                                type="button"
-                                onClick={handlePhotoUpload}
-                                disabled={uploadingPhoto}
-                                className="bg-green-600 hover:bg-green-700"
-                            >
-                                <Upload className="mr-2 h-4 w-4" />
-                                {uploadingPhoto ? 'Mengupload...' : 'Upload Foto'}
-                            </Button>
-                        </div>
+                    {/* Indikator loading jika sedang upload */}
+                    {uploadingPhoto && (
+                        <p className="text-sm text-blue-600">Mengupload foto...</p>
                     )}
 
                     <Form

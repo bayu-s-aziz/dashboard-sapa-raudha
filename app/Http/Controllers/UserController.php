@@ -220,6 +220,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
+            'role' => 'nullable|in:guru,admin,kepsek',
         ]);
 
         if ($validator->fails()) {
@@ -238,10 +239,16 @@ class UserController extends Controller
             // Update userable data
             if ($user->userable) {
                 if ($user->userable instanceof Guru) {
-                    $user->userable->update([
+                    $updateData = [
                         'name' => $request->name,
                         'email' => $request->email,
-                    ]);
+                    ];
+                    
+                    if ($request->has('role')) {
+                        $updateData['role'] = $request->role;
+                    }
+                    
+                    $user->userable->update($updateData);
                 }
             }
 

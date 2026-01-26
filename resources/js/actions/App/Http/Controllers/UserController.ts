@@ -223,7 +223,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\UserController::getStatistics
-* @see app/Http/Controllers/UserController.php:384
+* @see app/Http/Controllers/UserController.php:391
 * @route '/api/users/statistics'
 */
 export const getStatistics = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -238,7 +238,7 @@ getStatistics.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::getStatistics
-* @see app/Http/Controllers/UserController.php:384
+* @see app/Http/Controllers/UserController.php:391
 * @route '/api/users/statistics'
 */
 getStatistics.url = (options?: RouteQueryOptions) => {
@@ -247,7 +247,7 @@ getStatistics.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\UserController::getStatistics
-* @see app/Http/Controllers/UserController.php:384
+* @see app/Http/Controllers/UserController.php:391
 * @route '/api/users/statistics'
 */
 getStatistics.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -257,7 +257,7 @@ getStatistics.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\UserController::getStatistics
-* @see app/Http/Controllers/UserController.php:384
+* @see app/Http/Controllers/UserController.php:391
 * @route '/api/users/statistics'
 */
 getStatistics.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -267,7 +267,7 @@ getStatistics.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => (
 
 /**
 * @see \App\Http\Controllers\UserController::getStatistics
-* @see app/Http/Controllers/UserController.php:384
+* @see app/Http/Controllers/UserController.php:391
 * @route '/api/users/statistics'
 */
 const getStatisticsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -277,7 +277,7 @@ const getStatisticsForm = (options?: RouteQueryOptions): RouteFormDefinition<'ge
 
 /**
 * @see \App\Http\Controllers\UserController::getStatistics
-* @see app/Http/Controllers/UserController.php:384
+* @see app/Http/Controllers/UserController.php:391
 * @route '/api/users/statistics'
 */
 getStatisticsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -287,7 +287,7 @@ getStatisticsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'
 
 /**
 * @see \App\Http\Controllers\UserController::getStatistics
-* @see app/Http/Controllers/UserController.php:384
+* @see app/Http/Controllers/UserController.php:391
 * @route '/api/users/statistics'
 */
 getStatisticsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -777,7 +777,7 @@ export const update = {
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:331
+* @see app/Http/Controllers/UserController.php:338
 * @route '/api/users/{id}'
 */
 const destroy8577520d388f94c4f06093a0b2195853 = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -792,7 +792,7 @@ destroy8577520d388f94c4f06093a0b2195853.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:331
+* @see app/Http/Controllers/UserController.php:338
 * @route '/api/users/{id}'
 */
 destroy8577520d388f94c4f06093a0b2195853.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -819,7 +819,7 @@ destroy8577520d388f94c4f06093a0b2195853.url = (args: { id: string | number } | [
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:331
+* @see app/Http/Controllers/UserController.php:338
 * @route '/api/users/{id}'
 */
 destroy8577520d388f94c4f06093a0b2195853.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -829,7 +829,7 @@ destroy8577520d388f94c4f06093a0b2195853.delete = (args: { id: string | number } 
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:331
+* @see app/Http/Controllers/UserController.php:338
 * @route '/api/users/{id}'
 */
 const destroy8577520d388f94c4f06093a0b2195853Form = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -844,7 +844,7 @@ const destroy8577520d388f94c4f06093a0b2195853Form = (args: { id: string | number
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:331
+* @see app/Http/Controllers/UserController.php:338
 * @route '/api/users/{id}'
 */
 destroy8577520d388f94c4f06093a0b2195853Form.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -860,7 +860,7 @@ destroy8577520d388f94c4f06093a0b2195853Form.delete = (args: { id: string | numbe
 destroy8577520d388f94c4f06093a0b2195853.form = destroy8577520d388f94c4f06093a0b2195853Form
 /**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:331
+* @see app/Http/Controllers/UserController.php:338
 * @route '/users/{id}'
 */
 const destroy3d7aae258ed911ef8bd3b1d2fc6768ef = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -875,7 +875,7 @@ destroy3d7aae258ed911ef8bd3b1d2fc6768ef.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:331
+* @see app/Http/Controllers/UserController.php:338
 * @route '/users/{id}'
 */
 destroy3d7aae258ed911ef8bd3b1d2fc6768ef.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -902,7 +902,7 @@ destroy3d7aae258ed911ef8bd3b1d2fc6768ef.url = (args: { id: string | number } | [
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:331
+* @see app/Http/Controllers/UserController.php:338
 * @route '/users/{id}'
 */
 destroy3d7aae258ed911ef8bd3b1d2fc6768ef.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -912,7 +912,7 @@ destroy3d7aae258ed911ef8bd3b1d2fc6768ef.delete = (args: { id: string | number } 
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:331
+* @see app/Http/Controllers/UserController.php:338
 * @route '/users/{id}'
 */
 const destroy3d7aae258ed911ef8bd3b1d2fc6768efForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -927,7 +927,7 @@ const destroy3d7aae258ed911ef8bd3b1d2fc6768efForm = (args: { id: string | number
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:331
+* @see app/Http/Controllers/UserController.php:338
 * @route '/users/{id}'
 */
 destroy3d7aae258ed911ef8bd3b1d2fc6768efForm.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -949,7 +949,7 @@ export const destroy = {
 
 /**
 * @see \App\Http\Controllers\UserController::uploadPhoto
-* @see app/Http/Controllers/UserController.php:396
+* @see app/Http/Controllers/UserController.php:403
 * @route '/api/users/{id}/upload-photo'
 */
 export const uploadPhoto = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -964,7 +964,7 @@ uploadPhoto.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::uploadPhoto
-* @see app/Http/Controllers/UserController.php:396
+* @see app/Http/Controllers/UserController.php:403
 * @route '/api/users/{id}/upload-photo'
 */
 uploadPhoto.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -991,7 +991,7 @@ uploadPhoto.url = (args: { id: string | number } | [id: string | number ] | stri
 
 /**
 * @see \App\Http\Controllers\UserController::uploadPhoto
-* @see app/Http/Controllers/UserController.php:396
+* @see app/Http/Controllers/UserController.php:403
 * @route '/api/users/{id}/upload-photo'
 */
 uploadPhoto.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -1001,7 +1001,7 @@ uploadPhoto.post = (args: { id: string | number } | [id: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\UserController::uploadPhoto
-* @see app/Http/Controllers/UserController.php:396
+* @see app/Http/Controllers/UserController.php:403
 * @route '/api/users/{id}/upload-photo'
 */
 const uploadPhotoForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -1011,7 +1011,7 @@ const uploadPhotoForm = (args: { id: string | number } | [id: string | number ] 
 
 /**
 * @see \App\Http\Controllers\UserController::uploadPhoto
-* @see app/Http/Controllers/UserController.php:396
+* @see app/Http/Controllers/UserController.php:403
 * @route '/api/users/{id}/upload-photo'
 */
 uploadPhotoForm.post = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

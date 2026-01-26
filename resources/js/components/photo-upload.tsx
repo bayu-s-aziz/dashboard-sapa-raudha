@@ -1,7 +1,6 @@
-import { Camera, Upload, X } from 'lucide-react';
-import { useState, type ChangeEvent } from 'react';
+import { Camera, X } from 'lucide-react';
+import { useRef, useState, type ChangeEvent } from 'react';
 
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -24,6 +23,7 @@ export default function PhotoUpload({
 }: PhotoUploadProps) {
     const [preview, setPreview] = useState<string | null>(currentPhoto || null);
     const [file, setFile] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];
@@ -54,8 +54,15 @@ export default function PhotoUpload({
 
     const handleRemovePhoto = () => {
         setFile(null);
-        setPreview(null);
+        setPreview(currentPhoto || null);
         onPhotoChange(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    const handleAvatarClick = () => {
+        fileInputRef.current?.click();
     };
 
     return (
@@ -63,8 +70,8 @@ export default function PhotoUpload({
             <Label htmlFor="photo-upload">{label}</Label>
 
             <div className="flex items-center space-x-4">
-                {/* Photo Preview */}
-                <div className="relative">
+                {/* Photo Preview - Sekarang bisa diklik */}
+                <div className="relative cursor-pointer" onClick={handleAvatarClick}>
                     <div className="h-24 w-24 rounded-full border-2 border-gray-300 overflow-hidden bg-gray-100 flex items-center justify-center">
                         {preview ? (
                             <img
@@ -80,7 +87,10 @@ export default function PhotoUpload({
                     {preview && (
                         <button
                             type="button"
-                            onClick={handleRemovePhoto}
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent triggering avatar click
+                                handleRemovePhoto();
+                            }}
                             className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
                         >
                             <X className="h-3 w-3" />
@@ -88,35 +98,22 @@ export default function PhotoUpload({
                     )}
                 </div>
 
-                {/* Upload Button */}
+                {/* Hidden File Input */}
+                <Input
+                    ref={fileInputRef}
+                    type="file"
+                    accept={accept}
+                    onChange={handleFileChange}
+                    className="hidden"
+                />
+
+                {/* Info Text */}
                 <div className="flex-1">
-                    <Input
-                        id="photo-upload"
-                        type="file"
-                        accept={accept}
-                        onChange={handleFileChange}
-                        className="hidden"
-                    />
-                    <Label htmlFor="photo-upload">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            className="cursor-pointer"
-                            asChild
-                        >
-                            <span>
-                                <Upload className="h-4 w-4 mr-2" />
-                                {file ? 'Ganti Foto' : 'Upload Foto'}
-                            </span>
-                        </Button>
-                    </Label>
-
-                    <p className="text-xs text-gray-500 mt-1">
-                        Format: JPG, PNG, GIF. Maksimal: {maxSize}
+                    <p className="text-sm text-gray-600">
+                        Klik avatar untuk memilih foto baru. Format: JPG, PNG, GIF. Maksimal: {maxSize}
                     </p>
-
                     {file && (
-                        <p className="text-xs text-green-600 mt-1">
+                        <p className="text-sm text-green-600 mt-1">
                             File dipilih: {file.name}
                         </p>
                     )}

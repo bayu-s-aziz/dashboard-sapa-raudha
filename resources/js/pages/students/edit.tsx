@@ -50,6 +50,13 @@ export default function StudentEdit({ student, classes }: Props) {
     const [photoFile, setPhotoFile] = useState<File | null>(null);
     const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
+    // Auto-upload when photoFile changes
+    useEffect(() => {
+        if (photoFile) {
+            handlePhotoUpload();
+        }
+    }, [photoFile]);
+
     const page = usePage<{ flash?: { success?: string; error?: string } }>();
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -185,18 +192,9 @@ export default function StudentEdit({ student, classes }: Props) {
                                 label="Foto Siswa"
                             />
 
-                            {photoFile && (
-                                <div className="flex justify-end">
-                                    <Button
-                                        type="button"
-                                        onClick={handlePhotoUpload}
-                                        disabled={uploadingPhoto}
-                                        className="bg-green-600 hover:bg-green-700"
-                                    >
-                                        <Upload className="mr-2 h-4 w-4" />
-                                        {uploadingPhoto ? 'Mengupload...' : 'Upload Foto'}
-                                    </Button>
-                                </div>
+                            {/* Indikator loading jika sedang upload */}
+                            {uploadingPhoto && (
+                                <p className="text-sm text-blue-600">Mengupload foto...</p>
                             )}
 
                             <div className="grid gap-4 md:grid-cols-2">
