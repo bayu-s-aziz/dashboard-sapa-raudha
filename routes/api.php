@@ -8,24 +8,18 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\ParentController;
+use App\Http\Controllers\AuthController;
 
 // Public authentication routes for Flutter / mobile clients
-// Forward to Fortify routes for login
-Route::post('/auth/login', function (Illuminate\Http\Request $request) {
-    return app(\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class)->store($request);
-});
-
-Route::post('/auth/logout', function (Illuminate\Http\Request $request) {
-    return app(\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class)->destroy($request);
-});
-
-Route::get('/auth/logout', function (Illuminate\Http\Request $request) {
-    return app(\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class)->destroy($request);
-});
+Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/logout', [AuthController::class, 'logout']);
+Route::get('/auth/logout', [AuthController::class, 'logout']);
 
 // Protect API routes with token-based authentication (Sanctum)
 // Move public endpoints outside this group if needed.
 Route::middleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class])->group(function () {
+    Route::get('/user', [AuthController::class, 'user']);
+
     // User Management Routes
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index']);
