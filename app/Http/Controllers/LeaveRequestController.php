@@ -20,7 +20,7 @@ class LeaveRequestController extends Controller
      */
     public function index(Request $request)
     {
-        $query = LeaveRequest::with('student', 'reviewer');
+        $query = LeaveRequest::with(['student.kelas', 'student.parent.user', 'reviewer']);
 
         // Filter by status
         if ($request->has('status') && !empty($request->status)) {
@@ -65,7 +65,7 @@ class LeaveRequestController extends Controller
      */
     public function indexInertia(Request $request)
     {
-        $query = LeaveRequest::with('student', 'reviewer');
+        $query = LeaveRequest::with(['student.kelas', 'student.parent.user', 'reviewer']);
 
         if ($request->has('status') && !empty($request->status)) {
             $query->where('status', $request->status);
@@ -242,6 +242,17 @@ class LeaveRequestController extends Controller
      */
     public function store(Request $request)
     {
+        // Accept student_nisn from mobile clients and resolve to student_id
+        if ($request->has('student_nisn') && empty($request->student_id)) {
+            $student = Siswa::where('nisn', $request->student_nisn)->first();
+            if (!$student) {
+                return response()->json([
+                    'message' => 'Siswa dengan NISN tidak ditemukan',
+                ], 404);
+            }
+            $request->merge(['student_id' => $student->id]);
+        }
+
         $validator = Validator::make($request->all(), [
             'student_id' => 'required|exists:students,id',
             'request_date' => 'required|date',
@@ -388,7 +399,7 @@ class LeaveRequestController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'reviewed_by' => 'required|exists:gurus,id',
+            'reviewed_by' => 'nullable|exists:gurus,id',
             'review_notes' => 'nullable|string',
         ]);
 
@@ -396,8 +407,18 @@ class LeaveRequestController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Resolve reviewer: prefer request param, otherwise use authenticated guru if available
+        $reviewedBy = $request->input('reviewed_by');
+        if (empty($reviewedBy) && Auth::check() && Auth::user()->userable && Auth::user()->userable instanceof Guru) {
+            $reviewedBy = Auth::user()->userable->id;
+        }
+
+        if (empty($reviewedBy)) {
+            return response()->json(['reviewed_by' => ['Reviewer tidak tersedia']], 422);
+        }
+
         try {
-            $leaveRequest->approve($request->reviewed_by, $request->review_notes ?? null);
+            $leaveRequest->approve($reviewedBy, $request->review_notes ?? null);
             $leaveRequest->load('student', 'reviewer');
 
             return response()->json([
@@ -432,7 +453,7 @@ class LeaveRequestController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'reviewed_by' => 'required|exists:gurus,id',
+            'reviewed_by' => 'nullable|exists:gurus,id',
             'review_notes' => 'nullable|string',
         ]);
 
@@ -440,8 +461,18 @@ class LeaveRequestController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Resolve reviewer if not provided
+        $reviewedBy = $request->input('reviewed_by');
+        if (empty($reviewedBy) && Auth::check() && Auth::user()->userable && Auth::user()->userable instanceof Guru) {
+            $reviewedBy = Auth::user()->userable->id;
+        }
+
+        if (empty($reviewedBy)) {
+            return response()->json(['reviewed_by' => ['Reviewer tidak tersedia']], 422);
+        }
+
         try {
-            $leaveRequest->reject($request->reviewed_by, $request->review_notes ?? null);
+            $leaveRequest->reject($reviewedBy, $request->review_notes ?? null);
             $leaveRequest->load('student', 'reviewer');
 
             return response()->json([
@@ -469,7 +500,9 @@ class LeaveRequestController extends Controller
             ], 404);
         }
 
-        $query = $student->leaveRequests();
+        // Use LeaveRequest query so we can eager-load the student relation per item
+        $query = LeaveRequest::with(['student.kelas', 'student.parent.user', 'reviewer'])
+            ->where('student_id', $studentId);
 
         // Filter by status
         if ($request->has('status') && !empty($request->status)) {
@@ -485,9 +518,7 @@ class LeaveRequestController extends Controller
             $query->whereDate('request_date', '<=', $request->end_date);
         }
 
-        $leaveRequests = $query->with('reviewer')
-            ->orderBy('request_date', 'desc')
-            ->get();
+        $leaveRequests = $query->orderBy('request_date', 'desc')->get();
 
         return response()->json([
             'student' => $student,
@@ -500,7 +531,7 @@ class LeaveRequestController extends Controller
      */
     public function getPending(Request $request)
     {
-        $query = LeaveRequest::with('student', 'reviewer')
+        $query = LeaveRequest::with(['student.kelas', 'student.parent.user', 'reviewer'])
             ->where('status', 'pending');
 
         // Filter by date range

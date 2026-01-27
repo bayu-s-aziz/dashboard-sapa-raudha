@@ -17,7 +17,10 @@ Route::get('/auth/logout', [AuthController::class, 'logout']);
 
 // Protect API routes with token-based authentication (Sanctum)
 // Move public endpoints outside this group if needed.
-Route::middleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class])->group(function () {
+Route::middleware([
+    \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+    'auth:sanctum',
+])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
 
     // User Management Routes
@@ -38,6 +41,8 @@ Route::middleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreSta
         Route::post('/', [StudentController::class, 'store']);
         Route::get('/statistics', [StudentController::class, 'getStatistics']);
         Route::get('/class/{classId}', [StudentController::class, 'getByClass']);
+        // Lookup by NISN (used by mobile clients)
+        Route::get('/nisn/{nisn}', [StudentController::class, 'getByNisn']);
         Route::get('/{id}', [StudentController::class, 'show']);
         Route::put('/{id}', [StudentController::class, 'update']);
         Route::delete('/{id}', [StudentController::class, 'destroy']);

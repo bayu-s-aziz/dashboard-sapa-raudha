@@ -9,6 +9,10 @@ class LeaveRequest extends Model
 {
     use HasFactory;
 
+    // This model uses custom timestamps `submitted_at` and `reviewed_at`.
+    // Disable default Eloquent timestamps to avoid inserting created_at/updated_at.
+    public $timestamps = false;
+
     protected $table = 'leave_requests';
 
     protected $fillable = [

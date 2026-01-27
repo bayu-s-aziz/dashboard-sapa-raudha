@@ -15,7 +15,15 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Siswa::with('kelas', 'parent');
+        $query = Siswa::with('kelas', 'parent.user');
+
+        // Filter by class group (Kelompok A/B)
+        if ($request->has('group') && !empty($request->group)) {
+            $groups = array_map('trim', explode(',', $request->group));
+            $query->whereHas('kelas', function ($q) use ($groups) {
+                $q->whereIn('group', $groups);
+            });
+        }
 
         // Filter by class
         if ($request->has('class_id') && !empty($request->class_id)) {
@@ -37,11 +45,29 @@ class StudentController extends Controller
             });
         }
 
-        // Pagination
-        $perPage = $request->input('per_page', 15);
-        $students = $query->orderBy('name')->paginate($perPage);
+        // Get students with today's attendance status
+        $students = $query->orderBy('name')->get()->map(function ($student) {
+            $today = now()->toDateString();
+            $attendance = $student->attendance()->where('date', $today)->first();
+            $student->daily_status = $attendance ? $attendance->status : null;
+            // Attach class_name and nis for API consumers
+            $student->class_name = $student->kelas ? $student->kelas->name : null;
+            $student->nis = $student->nis ?? null;
+            return $student;
+        });
 
-        return response()->json($students);
+        // Manual pagination since we modified the collection
+        $perPage = $request->input('per_page', 15);
+        $page = $request->input('page', 1);
+        $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $students->forPage($page, $perPage),
+            $students->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'pageName' => 'page']
+        );
+
+        return response()->json($paginated);
     }
 
     /**
@@ -72,7 +98,8 @@ class StudentController extends Controller
             ]));
 
             // Load relationships
-            $student->load('class', 'parents');
+            // Normalize relationships to use correct names and include parent.user for API
+            $student->load('kelas', 'parent', 'parent.user');
 
             return response()->json([
                 'message' => 'Siswa berhasil dibuat',
@@ -91,7 +118,7 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        $student = Siswa::with('class', 'parents', 'attendance', 'leaveRequests')
+        $student = Siswa::with('kelas', 'parent.user', 'attendance', 'leaveRequests')
             ->find($id);
 
         if (!$student) {
@@ -99,6 +126,9 @@ class StudentController extends Controller
                 'message' => 'Siswa tidak ditemukan',
             ], 404);
         }
+
+        // Add class_name for API consumers
+        $student->class_name = $student->kelas ? $student->kelas->name : null;
 
         return response()->json($student);
     }
@@ -138,7 +168,8 @@ class StudentController extends Controller
                 'birth_place', 'birth_date', 'religion', 'address'
             ]));
 
-            $student->load('class', 'parents');
+            // Normalize relationships to use correct names and include parent.user for API
+            $student->load('kelas', 'parent', 'parent.user');
 
             return response()->json([
                 'message' => 'Siswa berhasil diperbarui',
@@ -214,6 +245,27 @@ class StudentController extends Controller
                 ];
             }),
         ]);
+    }
+
+    /**
+     * Get student by NISN
+     */
+    public function getByNisn($nisn)
+    {
+        $student = Siswa::with('kelas', 'parent.user', 'attendance', 'leaveRequests')
+            ->where('nisn', $nisn)
+            ->first();
+
+        if (!$student) {
+            return response()->json([
+                'message' => 'Siswa tidak ditemukan',
+            ], 404);
+        }
+
+        // Add class_name for API consumers
+        $student->class_name = $student->kelas ? $student->kelas->name : null;
+
+        return response()->json($student);
     }
 
     /**

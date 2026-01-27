@@ -29,6 +29,11 @@ class AuthController extends Controller
 
         $token = $user->createToken($request->device_name)->plainTextToken;
 
+        // Load relasi untuk orang tua
+        if ($user->isParent()) {
+            $user->load('userable.student');
+        }
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -47,8 +52,25 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        // Load base relation
+        $user->load('userable');
+
+        // If parent, eager load student relation (wrapped in try to be defensive)
+        try {
+            if (method_exists($user, 'isParent') && $user->isParent()) {
+                $user->load('userable.student');
+            }
+        } catch (\Exception $e) {
+            // ignore to avoid throwing 500 when relation loading fails
+        }
+
         return response()->json([
-            'user' => $request->user(),
+            'user' => $user,
         ]);
     }
 }

@@ -187,13 +187,30 @@ class AttendanceController extends Controller
      */
     public function getStudentReport($studentId, Request $request)
     {
-        $student = Siswa::find($studentId);
+        // Robust lookup: try by ID first (if numeric) then by NISN; also try nisn first if int lookup fails
+        $student = null;
+
+        if (is_numeric($studentId)) {
+            // Try by primary id
+            $student = Siswa::find($studentId);
+            // If not found, try by NISN (some clients pass numeric NISN)
+            if (!$student) {
+                $student = Siswa::where('nisn', (string) $studentId)->first();
+            }
+        } else {
+            // Non-numeric: most likely a NISN as string
+            $student = Siswa::where('nisn', $studentId)->first();
+        }
 
         if (!$student) {
             return response()->json([
                 'message' => 'Siswa tidak ditemukan',
             ], 404);
         }
+
+        // Ensure class_name and nis are available in response
+        $student->class_name = $student->kelas ? $student->kelas->name : null;
+        $student->nis = $student->nis ?? null;
 
         $query = $student->attendance();
 
