@@ -23,9 +23,9 @@ Route::get('/auth/logout', function (Illuminate\Http\Request $request) {
     return app(\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class)->destroy($request);
 });
 
-// Protect API routes with web session authentication. If you need public endpoints,
-// move them outside this middleware group or add explicit exceptions.
-Route::middleware(['web', 'auth'])->group(function () {
+// Protect API routes with token-based authentication (Sanctum)
+// Move public endpoints outside this group if needed.
+Route::middleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class])->group(function () {
     // User Management Routes
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index']);

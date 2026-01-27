@@ -18,13 +18,17 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
-        // Exclude API routes from CSRF verification (using session auth instead)
+        // Exclude API routes from CSRF verification (using Sanctum token auth)
         $middleware->validateCsrfTokens(except: [
             'api/*',
         ]);
 
         // Apply custom CORS globally so it handles Fortify auth routes from Flutter
         $middleware->prepend(Cors::class);
+
+        $middleware->alias([
+            'auth:sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        ]);
 
         $middleware->web(append: [
             HandleAppearance::class,
