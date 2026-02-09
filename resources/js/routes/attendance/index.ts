@@ -3,7 +3,7 @@ import reports3613d0 from './reports'
 import classMethod from './class'
 /**
 * @see \App\Http\Controllers\AttendanceController::index
-* @see app/Http/Controllers/AttendanceController.php:354
+* @see app/Http/Controllers/AttendanceController.php:371
 * @route '/attendance'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -18,7 +18,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::index
-* @see app/Http/Controllers/AttendanceController.php:354
+* @see app/Http/Controllers/AttendanceController.php:371
 * @route '/attendance'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -27,7 +27,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::index
-* @see app/Http/Controllers/AttendanceController.php:354
+* @see app/Http/Controllers/AttendanceController.php:371
 * @route '/attendance'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -37,7 +37,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\AttendanceController::index
-* @see app/Http/Controllers/AttendanceController.php:354
+* @see app/Http/Controllers/AttendanceController.php:371
 * @route '/attendance'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -47,7 +47,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\AttendanceController::index
-* @see app/Http/Controllers/AttendanceController.php:354
+* @see app/Http/Controllers/AttendanceController.php:371
 * @route '/attendance'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -57,7 +57,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\AttendanceController::index
-* @see app/Http/Controllers/AttendanceController.php:354
+* @see app/Http/Controllers/AttendanceController.php:371
 * @route '/attendance'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -67,7 +67,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\AttendanceController::index
-* @see app/Http/Controllers/AttendanceController.php:354
+* @see app/Http/Controllers/AttendanceController.php:371
 * @route '/attendance'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -84,7 +84,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\AttendanceController::reports
-* @see app/Http/Controllers/AttendanceController.php:396
+* @see app/Http/Controllers/AttendanceController.php:413
 * @route '/attendance/reports'
 */
 export const reports = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -99,7 +99,7 @@ reports.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::reports
-* @see app/Http/Controllers/AttendanceController.php:396
+* @see app/Http/Controllers/AttendanceController.php:413
 * @route '/attendance/reports'
 */
 reports.url = (options?: RouteQueryOptions) => {
@@ -108,7 +108,7 @@ reports.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::reports
-* @see app/Http/Controllers/AttendanceController.php:396
+* @see app/Http/Controllers/AttendanceController.php:413
 * @route '/attendance/reports'
 */
 reports.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -118,7 +118,7 @@ reports.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\AttendanceController::reports
-* @see app/Http/Controllers/AttendanceController.php:396
+* @see app/Http/Controllers/AttendanceController.php:413
 * @route '/attendance/reports'
 */
 reports.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -128,7 +128,7 @@ reports.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\AttendanceController::reports
-* @see app/Http/Controllers/AttendanceController.php:396
+* @see app/Http/Controllers/AttendanceController.php:413
 * @route '/attendance/reports'
 */
 const reportsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -138,7 +138,7 @@ const reportsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 
 /**
 * @see \App\Http\Controllers\AttendanceController::reports
-* @see app/Http/Controllers/AttendanceController.php:396
+* @see app/Http/Controllers/AttendanceController.php:413
 * @route '/attendance/reports'
 */
 reportsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -148,7 +148,7 @@ reportsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\AttendanceController::reports
-* @see app/Http/Controllers/AttendanceController.php:396
+* @see app/Http/Controllers/AttendanceController.php:413
 * @route '/attendance/reports'
 */
 reportsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -165,7 +165,7 @@ reports.form = reportsForm
 
 /**
 * @see \App\Http\Controllers\AttendanceController::create
-* @see app/Http/Controllers/AttendanceController.php:636
+* @see app/Http/Controllers/AttendanceController.php:653
 * @route '/attendance/create'
 */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -180,7 +180,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::create
-* @see app/Http/Controllers/AttendanceController.php:636
+* @see app/Http/Controllers/AttendanceController.php:653
 * @route '/attendance/create'
 */
 create.url = (options?: RouteQueryOptions) => {
@@ -189,7 +189,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::create
-* @see app/Http/Controllers/AttendanceController.php:636
+* @see app/Http/Controllers/AttendanceController.php:653
 * @route '/attendance/create'
 */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -199,7 +199,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\AttendanceController::create
-* @see app/Http/Controllers/AttendanceController.php:636
+* @see app/Http/Controllers/AttendanceController.php:653
 * @route '/attendance/create'
 */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -209,7 +209,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\AttendanceController::create
-* @see app/Http/Controllers/AttendanceController.php:636
+* @see app/Http/Controllers/AttendanceController.php:653
 * @route '/attendance/create'
 */
 const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -219,7 +219,7 @@ const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::create
-* @see app/Http/Controllers/AttendanceController.php:636
+* @see app/Http/Controllers/AttendanceController.php:653
 * @route '/attendance/create'
 */
 createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -229,7 +229,7 @@ createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\AttendanceController::create
-* @see app/Http/Controllers/AttendanceController.php:636
+* @see app/Http/Controllers/AttendanceController.php:653
 * @route '/attendance/create'
 */
 createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -246,7 +246,7 @@ create.form = createForm
 
 /**
 * @see \App\Http\Controllers\AttendanceController::store
-* @see app/Http/Controllers/AttendanceController.php:650
+* @see app/Http/Controllers/AttendanceController.php:667
 * @route '/attendance'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -261,7 +261,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::store
-* @see app/Http/Controllers/AttendanceController.php:650
+* @see app/Http/Controllers/AttendanceController.php:667
 * @route '/attendance'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -270,7 +270,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::store
-* @see app/Http/Controllers/AttendanceController.php:650
+* @see app/Http/Controllers/AttendanceController.php:667
 * @route '/attendance'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -280,7 +280,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\AttendanceController::store
-* @see app/Http/Controllers/AttendanceController.php:650
+* @see app/Http/Controllers/AttendanceController.php:667
 * @route '/attendance'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -290,7 +290,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::store
-* @see app/Http/Controllers/AttendanceController.php:650
+* @see app/Http/Controllers/AttendanceController.php:667
 * @route '/attendance'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -302,7 +302,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\AttendanceController::show
-* @see app/Http/Controllers/AttendanceController.php:724
+* @see app/Http/Controllers/AttendanceController.php:741
 * @route '/attendance/{kehadiran}'
 */
 export const show = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -317,7 +317,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::show
-* @see app/Http/Controllers/AttendanceController.php:724
+* @see app/Http/Controllers/AttendanceController.php:741
 * @route '/attendance/{kehadiran}'
 */
 show.url = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -350,7 +350,7 @@ show.url = (args: { kehadiran: number | { id: number } } | [kehadiran: number | 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::show
-* @see app/Http/Controllers/AttendanceController.php:724
+* @see app/Http/Controllers/AttendanceController.php:741
 * @route '/attendance/{kehadiran}'
 */
 show.get = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -360,7 +360,7 @@ show.get = (args: { kehadiran: number | { id: number } } | [kehadiran: number | 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::show
-* @see app/Http/Controllers/AttendanceController.php:724
+* @see app/Http/Controllers/AttendanceController.php:741
 * @route '/attendance/{kehadiran}'
 */
 show.head = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -370,7 +370,7 @@ show.head = (args: { kehadiran: number | { id: number } } | [kehadiran: number |
 
 /**
 * @see \App\Http\Controllers\AttendanceController::show
-* @see app/Http/Controllers/AttendanceController.php:724
+* @see app/Http/Controllers/AttendanceController.php:741
 * @route '/attendance/{kehadiran}'
 */
 const showForm = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -380,7 +380,7 @@ const showForm = (args: { kehadiran: number | { id: number } } | [kehadiran: num
 
 /**
 * @see \App\Http\Controllers\AttendanceController::show
-* @see app/Http/Controllers/AttendanceController.php:724
+* @see app/Http/Controllers/AttendanceController.php:741
 * @route '/attendance/{kehadiran}'
 */
 showForm.get = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -390,7 +390,7 @@ showForm.get = (args: { kehadiran: number | { id: number } } | [kehadiran: numbe
 
 /**
 * @see \App\Http\Controllers\AttendanceController::show
-* @see app/Http/Controllers/AttendanceController.php:724
+* @see app/Http/Controllers/AttendanceController.php:741
 * @route '/attendance/{kehadiran}'
 */
 showForm.head = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -407,7 +407,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\AttendanceController::edit
-* @see app/Http/Controllers/AttendanceController.php:740
+* @see app/Http/Controllers/AttendanceController.php:757
 * @route '/attendance/{kehadiran}/edit'
 */
 export const edit = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -422,7 +422,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::edit
-* @see app/Http/Controllers/AttendanceController.php:740
+* @see app/Http/Controllers/AttendanceController.php:757
 * @route '/attendance/{kehadiran}/edit'
 */
 edit.url = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -455,7 +455,7 @@ edit.url = (args: { kehadiran: number | { id: number } } | [kehadiran: number | 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::edit
-* @see app/Http/Controllers/AttendanceController.php:740
+* @see app/Http/Controllers/AttendanceController.php:757
 * @route '/attendance/{kehadiran}/edit'
 */
 edit.get = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -465,7 +465,7 @@ edit.get = (args: { kehadiran: number | { id: number } } | [kehadiran: number | 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::edit
-* @see app/Http/Controllers/AttendanceController.php:740
+* @see app/Http/Controllers/AttendanceController.php:757
 * @route '/attendance/{kehadiran}/edit'
 */
 edit.head = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -475,7 +475,7 @@ edit.head = (args: { kehadiran: number | { id: number } } | [kehadiran: number |
 
 /**
 * @see \App\Http\Controllers\AttendanceController::edit
-* @see app/Http/Controllers/AttendanceController.php:740
+* @see app/Http/Controllers/AttendanceController.php:757
 * @route '/attendance/{kehadiran}/edit'
 */
 const editForm = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -485,7 +485,7 @@ const editForm = (args: { kehadiran: number | { id: number } } | [kehadiran: num
 
 /**
 * @see \App\Http\Controllers\AttendanceController::edit
-* @see app/Http/Controllers/AttendanceController.php:740
+* @see app/Http/Controllers/AttendanceController.php:757
 * @route '/attendance/{kehadiran}/edit'
 */
 editForm.get = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -495,7 +495,7 @@ editForm.get = (args: { kehadiran: number | { id: number } } | [kehadiran: numbe
 
 /**
 * @see \App\Http\Controllers\AttendanceController::edit
-* @see app/Http/Controllers/AttendanceController.php:740
+* @see app/Http/Controllers/AttendanceController.php:757
 * @route '/attendance/{kehadiran}/edit'
 */
 editForm.head = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -512,7 +512,7 @@ edit.form = editForm
 
 /**
 * @see \App\Http\Controllers\AttendanceController::update
-* @see app/Http/Controllers/AttendanceController.php:756
+* @see app/Http/Controllers/AttendanceController.php:773
 * @route '/attendance/{kehadiran}'
 */
 export const update = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -527,7 +527,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::update
-* @see app/Http/Controllers/AttendanceController.php:756
+* @see app/Http/Controllers/AttendanceController.php:773
 * @route '/attendance/{kehadiran}'
 */
 update.url = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -560,7 +560,7 @@ update.url = (args: { kehadiran: number | { id: number } } | [kehadiran: number 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::update
-* @see app/Http/Controllers/AttendanceController.php:756
+* @see app/Http/Controllers/AttendanceController.php:773
 * @route '/attendance/{kehadiran}'
 */
 update.put = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -570,7 +570,7 @@ update.put = (args: { kehadiran: number | { id: number } } | [kehadiran: number 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::update
-* @see app/Http/Controllers/AttendanceController.php:756
+* @see app/Http/Controllers/AttendanceController.php:773
 * @route '/attendance/{kehadiran}'
 */
 const updateForm = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -585,7 +585,7 @@ const updateForm = (args: { kehadiran: number | { id: number } } | [kehadiran: n
 
 /**
 * @see \App\Http\Controllers\AttendanceController::update
-* @see app/Http/Controllers/AttendanceController.php:756
+* @see app/Http/Controllers/AttendanceController.php:773
 * @route '/attendance/{kehadiran}'
 */
 updateForm.put = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -602,7 +602,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\AttendanceController::destroy
-* @see app/Http/Controllers/AttendanceController.php:803
+* @see app/Http/Controllers/AttendanceController.php:820
 * @route '/attendance/{kehadiran}'
 */
 export const destroy = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -617,7 +617,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::destroy
-* @see app/Http/Controllers/AttendanceController.php:803
+* @see app/Http/Controllers/AttendanceController.php:820
 * @route '/attendance/{kehadiran}'
 */
 destroy.url = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -650,7 +650,7 @@ destroy.url = (args: { kehadiran: number | { id: number } } | [kehadiran: number
 
 /**
 * @see \App\Http\Controllers\AttendanceController::destroy
-* @see app/Http/Controllers/AttendanceController.php:803
+* @see app/Http/Controllers/AttendanceController.php:820
 * @route '/attendance/{kehadiran}'
 */
 destroy.delete = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -660,7 +660,7 @@ destroy.delete = (args: { kehadiran: number | { id: number } } | [kehadiran: num
 
 /**
 * @see \App\Http\Controllers\AttendanceController::destroy
-* @see app/Http/Controllers/AttendanceController.php:803
+* @see app/Http/Controllers/AttendanceController.php:820
 * @route '/attendance/{kehadiran}'
 */
 const destroyForm = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -675,7 +675,7 @@ const destroyForm = (args: { kehadiran: number | { id: number } } | [kehadiran: 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::destroy
-* @see app/Http/Controllers/AttendanceController.php:803
+* @see app/Http/Controllers/AttendanceController.php:820
 * @route '/attendance/{kehadiran}'
 */
 destroyForm.delete = (args: { kehadiran: number | { id: number } } | [kehadiran: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\AttendanceController::daily
-* @see app/Http/Controllers/AttendanceController.php:830
+* @see app/Http/Controllers/AttendanceController.php:847
 * @route '/attendance/class/{classId}/daily'
 */
 export const daily = (args: { classId: string | number } | [classId: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ daily.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::daily
-* @see app/Http/Controllers/AttendanceController.php:830
+* @see app/Http/Controllers/AttendanceController.php:847
 * @route '/attendance/class/{classId}/daily'
 */
 daily.url = (args: { classId: string | number } | [classId: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -43,7 +43,7 @@ daily.url = (args: { classId: string | number } | [classId: string | number ] | 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::daily
-* @see app/Http/Controllers/AttendanceController.php:830
+* @see app/Http/Controllers/AttendanceController.php:847
 * @route '/attendance/class/{classId}/daily'
 */
 daily.get = (args: { classId: string | number } | [classId: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -53,7 +53,7 @@ daily.get = (args: { classId: string | number } | [classId: string | number ] | 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::daily
-* @see app/Http/Controllers/AttendanceController.php:830
+* @see app/Http/Controllers/AttendanceController.php:847
 * @route '/attendance/class/{classId}/daily'
 */
 daily.head = (args: { classId: string | number } | [classId: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -63,7 +63,7 @@ daily.head = (args: { classId: string | number } | [classId: string | number ] |
 
 /**
 * @see \App\Http\Controllers\AttendanceController::daily
-* @see app/Http/Controllers/AttendanceController.php:830
+* @see app/Http/Controllers/AttendanceController.php:847
 * @route '/attendance/class/{classId}/daily'
 */
 const dailyForm = (args: { classId: string | number } | [classId: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -73,7 +73,7 @@ const dailyForm = (args: { classId: string | number } | [classId: string | numbe
 
 /**
 * @see \App\Http\Controllers\AttendanceController::daily
-* @see app/Http/Controllers/AttendanceController.php:830
+* @see app/Http/Controllers/AttendanceController.php:847
 * @route '/attendance/class/{classId}/daily'
 */
 dailyForm.get = (args: { classId: string | number } | [classId: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -83,7 +83,7 @@ dailyForm.get = (args: { classId: string | number } | [classId: string | number 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::daily
-* @see app/Http/Controllers/AttendanceController.php:830
+* @see app/Http/Controllers/AttendanceController.php:847
 * @route '/attendance/class/{classId}/daily'
 */
 dailyForm.head = (args: { classId: string | number } | [classId: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

@@ -1,3 +1,4 @@
+import AuthController from './AuthController'
 import UserController from './UserController'
 import StudentController from './StudentController'
 import GuruController from './GuruController'
@@ -12,6 +13,7 @@ import AcademicYearController from './AcademicYearController'
 import Settings from './Settings'
 
 const Controllers = {
+    AuthController: Object.assign(AuthController, AuthController),
     UserController: Object.assign(UserController, UserController),
     StudentController: Object.assign(StudentController, StudentController),
     GuruController: Object.assign(GuruController, GuruController),
